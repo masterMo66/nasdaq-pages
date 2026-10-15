@@ -1,6 +1,8 @@
 {
-  "attemptedAt": "2026-10-15T14:45:28.290Z",
-  "updated": 12,
+  "attemptedAt": "2026-10-15T14:48:40.784Z",
+  "updated": 11,
   "total": 12,
-  "errors": []
+  "errors": [
+    "513100: 净值获取失败（fetch failed）"
+  ]
 }
