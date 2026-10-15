@@ -4,8 +4,13 @@ const api=await readFile('worker/api.js','utf8');
 const {default:worker}=await import('data:text/javascript;base64,'+Buffer.from('const SNAPSHOT='+JSON.stringify(snapshot)+';const PAGE="";'+api).toString('base64'));
 const funds=[],errors=[];
 for(const fund of snapshot.funds){
- const response=await worker.fetch(new Request('https://example.com/api/fund?code='+fund.code));
- const body=await response.json();
+ let body,response;
+ for(let attempt=0;attempt<3;attempt++){
+  if(attempt)await new Promise(resolve=>setTimeout(resolve,3000*attempt));
+  response=await worker.fetch(new Request('https://example.com/api/fund?code='+fund.code));
+  body=await response.json();if(response.ok)break;
+  console.warn(fund.code,'attempt',attempt+1,body.error);
+ }
  if(response.ok){funds.push(body);console.log(fund.code,body.latest.date,body.latest.navDate)}
  else{funds.push(fund);errors.push(fund.code+': '+body.error);console.error(errors.at(-1))}
 }

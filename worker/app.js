@@ -84,4 +84,5 @@ $('#refresh').onclick=async()=>{
  }catch(e){$('#notice').textContent='快照读取失败，保留当前数据：'+(e.name==='AbortError'?'请求超时':e.message)}
  finally{clearTimeout(timer);button.disabled=false;button.textContent='↻ 读取最新快照'}
 };
+$('#notice').textContent='Actions 每天北京时间 09:17、18:17 采集；按钮读取最近发布的快照，调度及净值披露可能延迟。'+(BOOTSTRAP.collection?.errors?.length?' 最近采集 '+BOOTSTRAP.collection.updated+'/'+BOOTSTRAP.collection.total+' 只成功，失败基金保留上次有效数据：'+BOOTSTRAP.collection.errors.join('；'):'');
 renderOverview();setDates();renderTable();renderChart();new ResizeObserver(()=>renderChart()).observe($('#chart'));
