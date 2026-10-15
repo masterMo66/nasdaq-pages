@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-15T14:45:56.597Z",
+  "scope": "Availability and change detection only; not semantic review",
+  "sources": [
+    {
+      "url": "https://www.bls.gov/schedule/2026/home.htm",
+      "checkedAt": "2026-10-15T14:45:56.597Z",
+      "status": "ok",
+      "hash": "1bfb9d805fb7b419504962aa22773506b558534daac3b47d72c9de99fd16acac",
+      "changed": false,
+      "requiresReview": false
+    },
+    {
+      "url": "https://www.bls.gov/schedule/2027/home.htm",
+      "checkedAt": "2026-10-15T14:45:56.597Z",
+      "status": "ok",
+      "hash": "adc95365efa2f193c5f41a7cdc4221fc7ce89cebe831f33c7cc56c89082437cc",
+      "changed": false,
+      "requiresReview": false
+    },
+    {
+      "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "checkedAt": "2026-10-15T14:45:56.597Z",
+      "status": "ok",
+      "hash": "da0e32a0f3f694fcc122a9d0418eeff4c3b0a316d78322010d56a1ca82b0f3c7",
+      "changed": false,
+      "requiresReview": false
+    },
+    {
+      "url": "https://www.bea.gov/news/schedule/full",
+      "checkedAt": "2026-10-15T14:45:56.597Z",
+      "status": "ok",
+      "hash": "1b4c93432a6c0b9c41f2a8906009dd2bbdd55510e6cda5dcdb5899fe1dd6c303",
+      "changed": false,
+      "requiresReview": false
+    },
+    {
+      "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
+      "checkedAt": "2026-10-15T14:45:56.597Z",
+      "status": "ok",
+      "hash": "5523aa6c5d16605940af412fd1674a15531bc0de1f43aa98601e836715e05daf",
+      "changed": false,
+      "requiresReview": false
+    }
+  ]
+}

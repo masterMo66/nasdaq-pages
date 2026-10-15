@@ -1,0 +1,10 @@
+{
+  "name": "nasdaq-pages",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-pages.mjs",
+    "check": "node scripts/check-pages.mjs && node scripts/check-calendar.mjs",
+    "collect": "node scripts/collect-pages.mjs"
+  }
+}

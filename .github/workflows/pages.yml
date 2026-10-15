@@ -1,0 +1,67 @@
+name: Update data and deploy Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Beijing 09:17 and 18:17. GitHub may delay scheduled runs.
+    - cron: '17 1,10 * * *'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Collect fund data (preserve successful funds on partial failure)
+        id: collect
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: node scripts/collect-pages.mjs
+      - name: Check official calendar sources
+        id: calendar
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: node scripts/check-sources.mjs
+      - run: npm run build && npm run check
+      - name: Save collected data and source checks
+        if: github.event_name != 'push'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update fund snapshot and official source checks'
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Record collection failures
+        if: steps.collect.outcome == 'failure' || steps.calendar.outcome == 'failure'
+        run: echo 'Some sources failed; preserved prior valid data. See data/*status.json and source-checks.json.' >> "$GITHUB_STEP_SUMMARY"
+    outputs:
+      collection: ${{ steps.collect.outcome }}
+      calendar: ${{ steps.calendar.outcome }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Report upstream failure after deploying retained data
+        if: needs.build.outputs.collection == 'failure' || needs.build.outputs.calendar == 'failure'
+        run: exit 1
