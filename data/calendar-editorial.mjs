@@ -10,6 +10,7 @@ export const CALENDAR_REVIEW={verifiedAt:'2026-10-15',cadence:'每天北京时�
  PRESS:{summary:'政策决定后的记者会用于说明委员会判断并回答记者提问。通常在美东 14:30 左右开始，实际开始时间以该次官方直播安排为准。',overviewSource:'https://www.federalreserve.gov/newsevents/pressreleases/monetary20130313a.htm'},
  MIDTERMS:{summary:'2026 年美国联邦普选投票日，涉及国会席位等选举。各州投票截止、计票和认证进度不同，不能将投票日理解为全国统一公布结果的时间。',overviewSource:'https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/'}
 },events:{
+ 'PPI-2026-10-15':{verifiedAt:'2026-10-16',resultSummary:'2026 年 9 月最终需求 PPI 季调环比上涨 1.3%，未季调同比上涨 6.3%。剔除食品、能源与贸易服务的最终需求指数环比上涨 0.5%，同比上涨 5.0%；该口径不等同于仅剔除食品和能源。本条记录该次官方发布，后续可能修订。',resultSource:'https://www.bls.gov/news.release/archives/ppi_10152026.htm',resultVerifiedAt:'2026-10-16'},
  'CPI-2026-10-14':{resultSummary:'2026 年 9 月总体 CPI 季调环比上涨 0.6%，未季调同比上涨 3.7%；核心 CPI 季调环比上涨 0.3%，未季调同比上涨 2.6%。这是官方公布值，不包含市场预期或涨跌判断。',resultSource:'https://www.bls.gov/news.release/archives/cpi_10142026.htm',resultVerifiedAt:'2026-10-15'},
  'NFP-2026-10-02':{resultSummary:'2026 年 9 月非农就业人数增加 2.9 万。官方同时将 7 月和 8 月新增就业合计下修 6 万；本条记录该次发布口径，后续仍可能修订。',resultSource:'https://www.bls.gov/news.release/archives/empsit_10022026.htm',resultVerifiedAt:'2026-10-15'}
 }};
