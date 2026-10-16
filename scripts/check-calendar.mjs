@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 import {CALENDAR} from '../data/calendar.mjs';
+import {CALENDAR_REVIEW} from '../data/calendar-editorial.mjs';
 import {nyInstant,calendarDate,calendarClock} from '../worker/calendar-utils.js';
 assert.equal(nyInstant('2026-10-14','08:30'),'2026-10-14T12:30:00.000Z');
 assert.equal(nyInstant('2026-11-10','08:30'),'2026-11-10T13:30:00.000Z');
@@ -16,7 +17,7 @@ assert.ok(CALENDAR.events.some(e=>e.id==='NFP-2026-02-11'));
 assert.equal(new Set(CALENDAR.events.map(e=>e.id)).size,CALENDAR.events.length);
 for(const event of CALENDAR.events){assert.ok(event.source.startsWith('https://'));if(!event.allDay){assert.equal(calendarDate(event.instant,'America/New_York'),event.date);assert.equal(calendarClock(event.instant,'America/New_York'),event.time)}}
 for(const event of CALENDAR.events){
- assert.ok(event.summary?.length>20);assert.equal(event.verifiedAt,CALENDAR.verifiedAt);
+ assert.ok(event.summary?.length>20);assert.equal(event.verifiedAt,CALENDAR_REVIEW.events[event.id]?.verifiedAt||CALENDAR.verifiedAt);
  for(const link of [event.source,event.overviewSource,event.resultSource].filter(Boolean)){
   const url=new URL(link);assert.equal(url.protocol,'https:');assert.ok(['www.bls.gov','www.bea.gov','www.federalreserve.gov','www.fec.gov'].includes(url.hostname));
  }
