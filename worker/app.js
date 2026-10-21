@@ -16,9 +16,10 @@ function toast(message){$('#toast').textContent=message;$('#toast').hidden=false
 function syncThemeSwitch(){const dark=theme==='dark';$('#theme').setAttribute('aria-checked',String(dark));$('#theme').title=dark?'切换为浅色模式':'切换为深色模式'}
 syncThemeSwitch();
 $('#theme').onclick=()=>{theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;syncThemeSwitch();save('nasdaq-theme',theme);renderChart()};
+const vixGauge=createVixGauge();
 function renderVix(vix){
  if(!vix?.history?.length||!Number.isFinite(vix.latest?.close))return;
- $('#vix-value').textContent=vix.latest.close.toFixed(2);
+ vixGauge.setValue(vix.latest.close);
  const d=vix.latest.change;$('#vix-change').textContent=(d>=0?'+':'')+d.toFixed(2)+' ('+pct(vix.latest.changePercent)+') 较前一交易日';$('#vix-change').dataset.direction=d>0?'up':d<0?'down':'flat';
  $('#vix-date').textContent='美东 '+vix.latest.date+' 收盘';
  const rows=vix.history.slice(-30),min=Math.min(...rows.map(r=>r.close)),max=Math.max(...rows.map(r=>r.close)),span=max-min||1;
