@@ -20,15 +20,13 @@ const vixGauge=createVixGauge();
 function renderVix(vix){
  if(!vix?.history?.length||!Number.isFinite(vix.latest?.close))return;
  vixGauge.setValue(vix.latest.close);
- const d=vix.latest.change;$('#vix-change').textContent=(d>=0?'+':'')+d.toFixed(2)+' ('+pct(vix.latest.changePercent)+') 较前一交易日';$('#vix-change').dataset.direction=d>0?'up':d<0?'down':'flat';
- $('#vix-date').textContent='美东 '+vix.latest.date+' 收盘';
+ const change=vix.latest.change,summary='VIX '+vix.latest.close.toFixed(2)+' · 美东 '+vix.latest.date+' 收盘 · '+(change>=0?'+':'')+change.toFixed(2)+' ('+pct(vix.latest.changePercent)+') · Cboe 日收盘，非实时行情';
+ $('#vix-mini').title=summary;$('#vix-source').title=summary;$('#vix-source').setAttribute('aria-label',summary+'，查看官方数据');
  const rows=vix.history.slice(-30),min=Math.min(...rows.map(r=>r.close)),max=Math.max(...rows.map(r=>r.close)),span=max-min||1;
  const points=rows.map((r,i)=>(5+i/(rows.length-1||1)*290).toFixed(2)+','+(66-(r.close-min)/span*56).toFixed(2)).join(' ');
  $('#vix-chart').innerHTML='<polyline points="'+points+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
  $('#vix-chart').setAttribute('aria-label','VIX 最近 '+rows.length+' 个交易日收盘走势，'+rows[0].date+' 至 '+rows.at(-1).date+'，最新 '+vix.latest.close.toFixed(2));
- $('#vix-range').textContent=rows[0].date+' — '+rows.at(-1).date+' · '+rows.length+' 个交易日';
- const age=(Date.now()-Date.parse(vix.latest.date+'T00:00:00Z'))/86400000;
- $('#vix-status').textContent=(age>5?'数据源暂未提供近期收盘，保留最后有效数据。':'')+'日收盘数据随快照更新，非实时行情；VIX 不表示市场涨跌方向。';
+
 }
 renderVix(BOOTSTRAP.vix);
 function getFund(code){return data.funds.find(f=>f.code===code)}
