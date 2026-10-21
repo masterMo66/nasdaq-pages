@@ -27,3 +27,4 @@ main{width:calc(100% - var(--rail-width));max-width:1180px;margin-left:calc(var(
 @media(prefers-reduced-motion:reduce){.theme-thumb{transition:none}}
 @media(max-width:700px){#premium-page .intro{flex-direction:column;align-items:stretch;gap:14px}#premium-page .introaction{align-items:flex-end}#premium-page .intro p{max-width:none}}
 .page-actions{display:flex;justify-content:flex-end;padding:20px 0}.page-actions .introaction{flex-direction:row;align-items:center;gap:18px}.page-actions .status{display:block}@media(max-width:700px){.page-actions{padding:16px 0}.page-actions .introaction{width:100%;justify-content:space-between;gap:12px}.page-actions .status{font-size:9px}}
+.chartbottom{justify-content:flex-end}.chartbottom>input{width:132px;accent-color:var(--accent)}

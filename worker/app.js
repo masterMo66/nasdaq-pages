@@ -59,7 +59,7 @@ function renderChart(){
  const start=$('#start').value,end=$('#end').value;plotted=selected.map(code=>({fund:getFund(code),rows:getFund(code).history.filter(r=>r.date>=start&&r.date<=end)}));
  dates=[...new Set(plotted.flatMap(s=>s.rows.map(r=>r.date)))].sort();
  const svg=$('#chart');svg.replaceChildren();$('#tooltip').hidden=true;$('#empty-chart').hidden=dates.length>0;$('#cursor').disabled=!dates.length;
- if(!dates.length){['mean','extremes','percentile','days'].forEach(k=>$('#stat-'+k).textContent='—');$('#chart-foot').textContent='无有效记录';return}
+ if(!dates.length){['mean','extremes','percentile','days'].forEach(k=>$('#stat-'+k).textContent='—');return}
  $('#cursor').max=dates.length-1;$('#cursor').value=dates.length-1;
  const values=plotted.flatMap(s=>s.rows.map(r=>r.premium));let min=Math.min(0,...values),max=Math.max(0,...values),pad=Math.max((max-min)*.15,1);min-=pad;max+=pad;
  const width=svg.clientWidth,height=svg.clientHeight,left=45,right=width-12,bottom=height-30;
@@ -73,7 +73,6 @@ function renderChart(){
  if(main.rows.length){const points=main.rows.map(r=>[x(dates.indexOf(r.date)),y(r.premium)]);const defs=el('defs');const gradient=el('linearGradient',{id:'area',x1:0,y1:0,x2:0,y2:1});gradient.append(el('stop',{offset:'0%','stop-color':colors[0],'stop-opacity':.12}),el('stop',{offset:'100%','stop-color':colors[0],'stop-opacity':0}));defs.append(gradient);svg.append(defs);svg.append(el('path',{d:`M${points[0][0]},${y(0)} L${points.map(p=>p.join(',')).join(' L')} L${points.at(-1)[0]},${y(0)} Z`,fill:'url(#area)'}))}
  plotted.forEach((series,i)=>{const points=series.rows.map(r=>[x(dates.indexOf(r.date)),y(r.premium)]);if(points.length)svg.append(el('path',{d:'M'+points.map(p=>p.join(',')).join(' L'),fill:'none',stroke:colors[i],'stroke-width':i===0?2.7:1.9,'stroke-linejoin':'round','stroke-linecap':'round'}));if(points.length===1)svg.append(el('circle',{cx:points[0][0],cy:points[0][1],r:4,fill:colors[i]}))});
  svg.append(el('line',{id:'crosshair',x1:0,x2:0,y1:25,y2:bottom,stroke:axisColor,'stroke-dasharray':'3 4',visibility:'hidden'}));
- $('#chart-foot').textContent=`${dates[0]} 至 ${dates.at(-1)} · ${dates.length} 个交易日`;
  const rows=main.rows;if(rows.length){const vals=rows.map(r=>r.premium),last=vals.at(-1);$('#stat-mean').textContent=pct(vals.reduce((a,b)=>a+b,0)/vals.length);$('#stat-extremes').textContent=`${pct(Math.max(...vals))} / ${pct(Math.min(...vals))}`;$('#stat-percentile').textContent=(vals.filter(v=>v<=last).length/vals.length*100).toFixed(1)+'%';$('#stat-days').textContent=rows.length+' 天'}else{['mean','extremes','percentile','days'].forEach(k=>$('#stat-'+k).textContent='—')}
 }
 function showDate(index){if(!dates.length)return;index=Math.max(0,Math.min(dates.length-1,index));const date=dates[index];const hair=$('#crosshair');hair.setAttribute('x1',domain.x(index));hair.setAttribute('x2',domain.x(index));hair.setAttribute('visibility','visible');$('#tooltip').innerHTML=`<strong>${date} · 历史溢价</strong>`+plotted.map((s,i)=>{const r=s.rows.find(r=>r.date===date);return `<div class="tiprow"><span style="color:${colors[i]}">${esc(s.fund.manager)} ${s.fund.code}</span><b>${r?pct(r.premium):'缺少净值'}</b></div>${r?`<div class="tiprow"><small>收盘 ${r.close.toFixed(3)} / 净值 ${num(r.nav)}</small></div>`:''}`}).join('');$('#tooltip').hidden=false;$('#cursor').value=index}
