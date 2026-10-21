@@ -13,7 +13,23 @@ const num=x=>Number.isFinite(x)?x.toFixed(4):'—';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function save(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch{toast('浏览器存储不可用，本次偏好将仅在当前页面保留。')}}
 function toast(message){$('#toast').textContent=message;$('#toast').hidden=false;clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$('#toast').hidden=true,3500)}
-$('#theme').onclick=()=>{theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;save('nasdaq-theme',theme);renderChart()};
+function syncThemeSwitch(){const dark=theme==='dark';$('#theme').setAttribute('aria-checked',String(dark));$('#theme').title=dark?'切换为浅色模式':'切换为深色模式'}
+syncThemeSwitch();
+$('#theme').onclick=()=>{theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;syncThemeSwitch();save('nasdaq-theme',theme);renderChart()};
+function renderVix(vix){
+ if(!vix?.history?.length||!Number.isFinite(vix.latest?.close))return;
+ $('#vix-value').textContent=vix.latest.close.toFixed(2);
+ const d=vix.latest.change;$('#vix-change').textContent=(d>=0?'+':'')+d.toFixed(2)+' ('+pct(vix.latest.changePercent)+') 较前一交易日';$('#vix-change').dataset.direction=d>0?'up':d<0?'down':'flat';
+ $('#vix-date').textContent='美东 '+vix.latest.date+' 收盘';
+ const rows=vix.history.slice(-30),min=Math.min(...rows.map(r=>r.close)),max=Math.max(...rows.map(r=>r.close)),span=max-min||1;
+ const points=rows.map((r,i)=>(5+i/(rows.length-1||1)*290).toFixed(2)+','+(66-(r.close-min)/span*56).toFixed(2)).join(' ');
+ $('#vix-chart').innerHTML='<polyline points="'+points+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+ $('#vix-chart').setAttribute('aria-label','VIX 最近 '+rows.length+' 个交易日收盘走势，'+rows[0].date+' 至 '+rows.at(-1).date+'，最新 '+vix.latest.close.toFixed(2));
+ $('#vix-range').textContent=rows[0].date+' — '+rows.at(-1).date+' · '+rows.length+' 个交易日';
+ const age=(Date.now()-Date.parse(vix.latest.date+'T00:00:00Z'))/86400000;
+ $('#vix-status').textContent=(age>5?'数据源暂未提供近期收盘，保留最后有效数据。':'')+'日收盘数据随快照更新，非实时行情；VIX 不表示市场涨跌方向。';
+}
+renderVix(BOOTSTRAP.vix);
 function getFund(code){return data.funds.find(f=>f.code===code)}
 function renderOverview(){
  const funds=data.funds, sorted=[...funds].sort((a,b)=>a.latest.premium-b.latest.premium);
@@ -78,7 +94,7 @@ $('#refresh').onclick=async()=>{
   if(next.funds?.length!==BOOTSTRAP.funds.length||!next.funds.every(validFund))throw Error('快照格式无效');
   let changed=0;
   for(const fund of next.funds){const old=getFund(fund.code);if(fund.latest.date<old.latest.date||fund.latest.navDate<old.latest.navDate)continue;if(JSON.stringify(fund.latest)!==JSON.stringify(old.latest))changed++;data.funds[data.funds.findIndex(f=>f.code===fund.code)]=fund}
-  save('nasdaq-pages-data-v1',{funds:data.funds});renderOverview();setDates();renderTable();renderChart();
+  renderVix(next.vix);save('nasdaq-pages-data-v1',{funds:data.funds});renderOverview();setDates();renderTable();renderChart();
   $('#notice').textContent='已读取已发布快照，'+changed+' 只基金参考值有变化。Actions 每天北京时间 09:17、18:17 采集；按钮读取最近发布的数据，净值披露有延迟。'+(next.collection?.errors?.length?' 部分数据源失败，相关基金保留上次有效数据。':'');
   toast(changed?'已读取更新数据':'已是最近发布的数据');
  }catch(e){$('#notice').textContent='快照读取失败，保留当前数据：'+(e.name==='AbortError'?'请求超时':e.message)}

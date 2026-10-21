@@ -1,12 +1,12 @@
-import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {CALENDAR} from '../data/calendar.mjs';
 const files=['page.html','style.css','app.js','calendar.html','calendar.css','calendar.js','calendar-utils.js'];
 const [html,css,js,ch,cc,cj,cu]=await Promise.all(files.map(p=>readFile('worker/'+p,'utf8')));
-const snapshot=await readFile('data/snapshot.json','utf8');
+const snapshot=JSON.stringify({...JSON.parse(await readFile('data/snapshot.json','utf8')),vix:JSON.parse(await readFile('data/vix.json','utf8'))});
 const json=x=>JSON.stringify(x).replaceAll('<','\\u003c');
 const page=html.replace('/*CALENDAR*/',()=>ch).replace('/*CSS*/',()=>css+'\n'+cc).replace('/*JS*/',()=>'{const BOOTSTRAP='+json(JSON.parse(snapshot))+';\nconst CALENDAR='+json(CALENDAR)+';\n'+cu.replaceAll('export function','function')+'\n'+js+'\n'+cj+'\n}');
 await mkdir('dist',{recursive:true});await mkdir('preview',{recursive:true});
 await writeFile('dist/index.html',page);await writeFile('preview/index.html',page);
-await copyFile('data/snapshot.json','dist/snapshot.json');await writeFile('dist/calendar.json',json(CALENDAR));
+await writeFile('dist/snapshot.json',snapshot);await writeFile('dist/calendar.json',json(CALENDAR));
 await writeFile('dist/.nojekyll','');
 console.log('Built static GitHub Pages: 12 funds, '+CALENDAR.events.length+' events');
