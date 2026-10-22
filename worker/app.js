@@ -30,6 +30,11 @@ function renderVix(vix){
 }
 renderVix(BOOTSTRAP.vix);
 function getFund(code){return data.funds.find(f=>f.code===code)}
+function snapshotStamp(funds){
+ const times=funds.map(f=>f.fetchedAt||BOOTSTRAP.fetchedAt).sort();
+ const formatTime=v=>new Date(v).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+ return formatTime(times[0])+(formatTime(times[0])!==formatTime(times.at(-1))?' 至 '+formatTime(times.at(-1)):'');
+}
 function renderOverview(){
  const funds=data.funds, sorted=[...funds].sort((a,b)=>a.latest.premium-b.latest.premium);
  $('#count').innerHTML=`${funds.length} <small>只</small>`;
@@ -37,14 +42,12 @@ function renderOverview(){
  $('#market-min').textContent=pct(sorted[0].latest.premium);$('#market-max').textContent=pct(sorted.at(-1).latest.premium);
  $('#min-name').textContent=`${sorted[0].name} · ${sorted[0].code}`;$('#max-name').textContent=`${sorted.at(-1).name} · ${sorted.at(-1).code}`;
  const latestDates=[...new Set(funds.map(f=>f.latest.date))].sort();$('#market-date').textContent=`行情 ${latestDates[0]}${latestDates.length>1?' 至 '+latestDates.at(-1):''} · 非 IOPV 口径`;
- const times=funds.map(f=>f.fetchedAt||BOOTSTRAP.fetchedAt).sort();
- const formatTime=v=>new Date(v).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
- $('#snapshot-date').textContent=`采集 ${formatTime(times[0])}${times[0]!==times.at(-1)?' 至 '+formatTime(times.at(-1)):''} 北京时间`;
+ $('#snapshot-date').textContent='快照 '+snapshotStamp(funds)+' 北京时间';
 }
 function renderTable(){
  const query=$('#search').value.trim().toLowerCase();let funds=data.funds.filter(f=>(filter==='all'||(filter==='favorites'?favorites.has(f.code):f.exchange===filter))&&`${f.code}${f.name}${f.manager}`.toLowerCase().includes(query));
  funds.sort((a,b)=>(ascending?1:-1)*(a.latest.premium-b.latest.premium));
- $('#rows').innerHTML=funds.map(f=>`<tr><td><button class="favorite ${favorites.has(f.code)?'on':''}" data-favorite="${f.code}" aria-label="${favorites.has(f.code)?'取消关注':'关注'}${esc(f.name)}" aria-pressed="${favorites.has(f.code)}">${favorites.has(f.code)?'★':'☆'}</button></td><td class="fundname">${esc(f.name)}<small>${f.code} <span>· ${f.exchange}</span></small></td><td>${f.latest.close.toFixed(3)}</td><td>${num(f.latest.nav)}</td><td class="premium ${f.latest.premium<0?'negative':''}">${pct(f.latest.premium)}</td><td>${(f.latest.amount/1e8).toFixed(2)} 亿</td><td class="dates">${f.latest.date}<small>净值 ${f.latest.navDate}</small><small>行情源 ${esc(f.quoteSource||'东方财富')}</small></td><td><button class="compare ${selected.includes(f.code)?'on':''}" data-compare="${f.code}" aria-pressed="${selected.includes(f.code)}" aria-label="${selected.includes(f.code)?'移除':'对比'}${esc(f.name)}">${selected.includes(f.code)?'已加入':'＋ 对比'}</button></td></tr>`).join('');
+ $('#rows').innerHTML=funds.map(f=>`<tr><td><button class="favorite ${favorites.has(f.code)?'on':''}" data-favorite="${f.code}" aria-label="${favorites.has(f.code)?'取消关注':'关注'}${esc(f.name)}" aria-pressed="${favorites.has(f.code)}">${favorites.has(f.code)?'★':'☆'}</button></td><td class="fundname">${esc(f.name)}<small>${f.code} <span>· ${f.exchange}</span></small></td><td title="${esc('快照采集于 '+snapshotStamp([f])+' 北京时间')}">${f.latest.close.toFixed(3)}</td><td>${num(f.latest.nav)}</td><td class="premium ${f.latest.premium<0?'negative':''}">${pct(f.latest.premium)}</td><td>${(f.latest.amount/1e8).toFixed(2)} 亿</td><td class="dates">${f.latest.date}<small>净值 ${f.latest.navDate}</small><small>行情源 ${esc(f.quoteSource||'东方财富')}</small></td><td><button class="compare ${selected.includes(f.code)?'on':''}" data-compare="${f.code}" aria-pressed="${selected.includes(f.code)}" aria-label="${selected.includes(f.code)?'移除':'对比'}${esc(f.name)}">${selected.includes(f.code)?'已加入':'＋ 对比'}</button></td></tr>`).join('');
  $('#empty-table').hidden=funds.length>0;$('#table-count').textContent=`显示 ${funds.length} / ${data.funds.length} 只基金`;
  $$('[data-favorite]').forEach(b=>b.onclick=()=>{favorites.has(b.dataset.favorite)?favorites.delete(b.dataset.favorite):favorites.add(b.dataset.favorite);save('nasdaq-favorites',[...favorites]);renderTable()});
  $$('[data-compare]').forEach(b=>b.onclick=()=>toggleFund(b.dataset.compare));
@@ -83,7 +86,7 @@ $$('[data-range]').forEach(b=>b.onclick=()=>{range=b.dataset.range;$$('[data-ran
 $$('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;$$('[data-filter]').forEach(v=>v.classList.toggle('selected',v===b));renderTable()});$('#search').oninput=renderTable;$('#sort').onclick=()=>{ascending=!ascending;$('#sort').textContent=`参考溢价 ${ascending?'↑':'↓'}`;renderTable()};
 $('#export').onclick=()=>{const header=['基金代码','基金公司','交易日期','未复权收盘价','同日单位净值','溢价率(%)','成交额(元)','来源'];const rows=plotted.flatMap(s=>s.rows.map(r=>[s.fund.code,s.fund.manager,r.date,r.close,r.nav,r.premium.toFixed(6),r.amount??'',(r.quoteSource||'东方财富')+'/天天基金']));if(!rows.length){toast('所选区间暂无可导出记录。');return}const csv='\ufeff'+[header,...rows].map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=`纳指ETF同日溢价_${$('#start').value}_${$('#end').value}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast(`已导出 ${rows.length} 条真实历史记录。`)};
 $('#refresh').onclick=async()=>{
- const button=$('#refresh');button.disabled=true;button.textContent='读取中…';
+ const beforeStamp=snapshotStamp(data.funds);const button=$('#refresh');button.disabled=true;button.textContent='读取中…';
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
  try{
   const response=await fetch('./snapshot.json?t='+Date.now(),{cache:'no-store',signal:controller.signal});
@@ -93,10 +96,10 @@ $('#refresh').onclick=async()=>{
   let changed=0;
   for(const fund of next.funds){const old=getFund(fund.code);if(fund.latest.date<old.latest.date||fund.latest.navDate<old.latest.navDate)continue;if(JSON.stringify(fund.latest)!==JSON.stringify(old.latest))changed++;data.funds[data.funds.findIndex(f=>f.code===fund.code)]=fund}
   renderVix(next.vix);save('nasdaq-pages-data-v1',{funds:data.funds});renderOverview();setDates();renderTable();renderChart();
-  $('#notice').textContent='已读取已发布快照，'+changed+' 只基金参考值有变化。Actions 每天北京时间 09:17、18:17 采集；按钮读取最近发布的数据，净值披露有延迟。'+(next.collection?.errors?.length?' 部分数据源失败，相关基金保留上次有效数据。':'');
-  toast(changed?'已读取更新数据':'已是最近发布的数据');
+  const stamp=snapshotStamp(data.funds);$('#notice').textContent=(stamp===beforeStamp?'服务器快照未更新（'+stamp+'）。':'已读取 '+stamp+' 快照，'+changed+' 只参考值更新。')+'非实时行情，点击此按钮不会触发行情采集。'+(next.collection?.errors?.length?' 部分基金保留上次有效数据。':'');
+  toast(changed?'快照价格已更新':'已读取服务器快照，价格无变化');
  }catch(e){$('#notice').textContent='快照读取失败，保留当前数据：'+(e.name==='AbortError'?'请求超时':e.message)}
  finally{clearTimeout(timer);button.disabled=false;button.textContent='↻ 读取最新快照'}
 };
-$('#notice').textContent='Actions 每天北京时间 09:17、18:17 采集；按钮读取最近发布的快照，调度及净值披露可能延迟。'+(BOOTSTRAP.collection?.errors?.length?' 最近采集 '+BOOTSTRAP.collection.updated+'/'+BOOTSTRAP.collection.total+' 只成功，失败基金保留上次有效数据：'+BOOTSTRAP.collection.errors.join('；'):'');
+$('#notice').textContent='行情快照：'+snapshotStamp(data.funds)+'（北京时间），非实时。刷新仅重新读取已发布快照。'+(BOOTSTRAP.collection?.errors?.length?' 部分基金保留上次有效数据。':'');
 renderOverview();setDates();renderTable();renderChart();new ResizeObserver(()=>renderChart()).observe($('#chart'));
