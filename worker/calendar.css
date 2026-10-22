@@ -2,3 +2,31 @@
 @media(max-width:700px){#calendar-page .intro{flex-direction:column;align-items:stretch;gap:13px}#calendar-page .introaction{flex-direction:row;align-items:center;justify-content:space-between}#calendar-page .introaction .status{display:block;font-size:9px}.calendar-options .range{width:auto;flex-shrink:0}.tz-select{white-space:nowrap}.calendar-options{gap:12px}}
 
 .cal-category-earnings{--event-color:#655b93;--event-bg:#eeebf6}[data-theme=dark] .cal-category-earnings{--event-color:#c4b8eb;--event-bg:#342e46}.earnings-roster{border-top:1px solid var(--line);margin-top:28px;padding-top:20px}.earnings-roster summary{cursor:pointer;font-size:13px;color:var(--ink)}.earnings-roster summary small{font-size:10px;color:var(--muted);margin-left:12px}.earnings-table-wrap{overflow-x:auto;margin-top:16px}.earnings-table{width:100%;border-collapse:collapse;text-align:left;font-size:11px;min-width:530px}.earnings-table th,.earnings-table td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}.earnings-table th{font-weight:500;color:var(--muted)}.earnings-table small{display:block;color:var(--muted);font:10px/1.7 Consolas,sans-serif}.earnings-table a,.earnings-date,.earnings-roster p a{color:var(--accent)}.earnings-date{font:11px Consolas,monospace;border:0;background:none;padding:0}.earnings-pending,.earnings-roster p{font-size:10px;color:var(--muted)}.earnings-roster p{line-height:1.8;margin:14px 0 0}@media(max-width:700px){.earnings-roster summary small{display:block;margin:7px 0 0 16px}.earnings-table th,.earnings-table td{padding:8px}}
+
+/* The board sets the row height; detail content scrolls without sizing the row. */
+.calendar-detail{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.calendar-detail>.eyebrow,.calendar-detail>h2{flex-shrink:0}
+.calendar-detail h2{margin-bottom:18px}
+#cal-day-events{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding-right:7px;scroll-padding-top:0}
+.detail-event{padding:22px 0 19px;border-top:1px solid var(--line)}
+.detail-event.is-current-event h3{color:var(--event-color,var(--accent))}
+.detail-event h3{font-size:16px;line-height:1.65;font-weight:650;margin:12px 0}
+.detail-event .event-category{justify-content:space-between;font-size:9px;color:var(--muted)}
+.detail-event .event-category span{color:var(--event-color,var(--accent));font-weight:600;padding:3px 7px}
+.event-times{margin:13px 0 18px;padding:11px 12px;background:var(--event-bg,var(--soft));border-left:2px solid var(--event-color,var(--accent));border-radius:0 5px 5px 0}
+.event-time-group+.event-time-group{border-top:1px solid var(--line);margin-top:9px;padding-top:9px}
+.event-time-kind{font:600 10px/1.7 "Microsoft YaHei",sans-serif;color:var(--event-color,var(--accent));margin-bottom:4px}
+.event-time-row{display:flex;justify-content:space-between;align-items:baseline;gap:9px;font-size:10px;line-height:1.9}
+.event-time-row>span{color:var(--muted);white-space:nowrap;font-family:"Microsoft YaHei",sans-serif}
+.event-time-row>strong{font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+.detail-event .impact-label{font-size:10px;font-weight:600;letter-spacing:0;margin-top:18px;display:flex;align-items:center;gap:7px}
+.detail-event .impact-label::before{content:"";width:3px;height:10px;background:var(--event-color,var(--accent));border-radius:2px;opacity:.65}
+.detail-event p{font-size:11px;line-height:1.95;margin:8px 0;overflow-wrap:anywhere}
+.detail-event .event-summary{color:var(--ink)}
+.detail-event .event-note{font-size:10px;color:var(--muted)}
+.detail-event .event-result{color:var(--ink);padding:9px 11px;background:var(--soft);border-radius:5px}
+.event-sources{display:flex;flex-wrap:wrap;gap:6px 12px;border-top:1px dashed var(--line);margin-top:17px;padding-top:11px}
+.event-sources .detail-source{font-size:10px;margin-top:0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.schedule-status{font:9px/1.9 "Microsoft YaHei",sans-serif;color:var(--muted);margin-top:14px}
+@media(min-width:1001px){.calendar-detail{contain:size;align-self:stretch}}
+@media(max-width:1000px){.calendar-detail{max-height:560px}.calendar-detail h2{margin:8px 0 18px}#cal-day-events{flex:1}}
