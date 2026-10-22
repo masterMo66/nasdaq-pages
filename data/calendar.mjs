@@ -2,6 +2,7 @@
 // Do not generate monthly dates from rules such as "first Friday".
 import {nyInstant} from '../worker/calendar-utils.js';
 import {CALENDAR_REVIEW} from './calendar-editorial.mjs';
+import {EARNINGS,EARNINGS_EVENTS} from './earnings.mjs';
 const events=[];
 const types={
  CPI:{name:'CPI 消费者物价指数',short:'CPI',category:'inflation',focus:true,impact:'观察总体与核心通胀相对市场预期的差异，可能影响利率预期、债券收益率与科技股估值。'},
@@ -41,4 +42,5 @@ for(const [date,time,period] of [['01-22','10:00','2025年10月与11月'],['02-2
 for(const [date,period,stage] of [['01-22','2025年第三季度','更新值'],['02-20','2025年第四季度','初值'],['03-13','2025年第四季度','二次估计'],['04-09','2025年第四季度','三次估计'],['04-30','2026年第一季度','初值'],['05-28','2026年第一季度','二次估计'],['06-25','2026年第一季度','三次估计'],['07-30','2026年第二季度','初值'],['08-26','2026年第二季度','二次估计'],['09-30','2026年第二季度','三次估计'],['10-29','2026年第三季度','初值'],['11-25','2026年第三季度','二次估计'],['12-23','2026年第三季度','三次估计']])add('GDP','2026-'+date,'08:30',bea,period+' · '+stage,{name:'美国 GDP · '+stage});
 events.push({id:'MIDTERMS-2026-11-03',type:'MIDTERMS',name:'美国中期选举 · 投票日',short:'中期选举',category:'politics',focus:true,date:'2026-11-03',instant:null,allDay:true,source:'https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/',details:'美国当地11月3日投票，各州投票时间不同；计票与最终结果可能跨越多个交易日。不是统一的结果公布时刻。',impact:'国会席位变化可能影响财政、税收、监管与政策推进预期。日历仅标记投票日，不预测结果或市场涨跌。'});
 for(const event of events){Object.assign(event,CALENDAR_REVIEW.types[event.type],{verifiedAt:CALENDAR_REVIEW.verifiedAt},CALENDAR_REVIEW.events[event.id]||{})}
-export const CALENDAR={verifiedAt:CALENDAR_REVIEW.verifiedAt,reviewCadence:CALENDAR_REVIEW.cadence,minMonth:'2026-01',maxMonth:'2027-12',coverage:'2026–2027 CPI / 非农 / PPI / FOMC；2026 JOLTS / PCE / GDP；2026中期选举。2027 BEA 与 JOLTS 暂未录入。',events:events.sort((a,b)=>(a.instant||a.date).localeCompare(b.instant||b.date))};
+events.push(...EARNINGS_EVENTS);
+export const CALENDAR={verifiedAt:CALENDAR_REVIEW.verifiedAt,reviewCadence:CALENDAR_REVIEW.cadence,minMonth:'2026-01',maxMonth:'2027-12',coverage:'2026–2027 CPI / 非农 / PPI / FOMC；2026 JOLTS / PCE / GDP；2026中期选举；美国市值前20公司近期财报安排（名单核对 '+EARNINGS.rankingAsOf+'）。2027 BEA 与 JOLTS 暂未录入。',earnings:EARNINGS,events:events.sort((a,b)=>(a.instant||a.date).localeCompare(b.instant||b.date))};
