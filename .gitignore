@@ -3,3 +3,5 @@ preview/
 node_modules/
 *.tar.gz
 worker/index.js
+test-results/
+playwright-report/

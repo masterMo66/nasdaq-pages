@@ -1,0 +1,92 @@
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('fund search, favorites, compare limits, dates, CSV and refresh fallback', async ({ page }) => {
+  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await expect(page.locator('#funds tbody tr')).toHaveCount(12);
+  await page.getByRole('searchbox', { name: '搜索基金' }).fill('513100');
+  await expect(page.locator('#funds tbody tr')).toHaveCount(1);
+  await page.locator('.favorite').click();
+  await page.getByRole('searchbox', { name: '搜索基金' }).fill('');
+  await page.getByRole('button', { name: '我的关注', exact: true }).click();
+  await expect(page.locator('#funds tbody tr')).toHaveCount(1);
+  await page.reload();
+  await page.getByRole('button', { name: '我的关注', exact: true }).click();
+  await expect(page.locator('#funds tbody tr')).toHaveCount(1);
+  await page.getByRole('button', { name: '全部基金', exact: true }).click();
+  const firstName = await page.locator('#funds tbody .fundname').first().textContent();
+  await page.getByRole('button', { name: '参考溢价', exact: true }).click();
+  await expect(page.locator('#funds tbody .fundname').first()).not.toHaveText(firstName);
+  await page.locator('.compare:not(.on)').first().click();
+  await expect(page.locator('.chip')).toHaveCount(4);
+  await page.locator('.compare:not(.on)').first().click();
+  await expect(page.getByRole('status').filter({ hasText: '最多对比' })).toBeVisible();
+  await expect(page.locator('.chip')).toHaveCount(4);
+  await page.getByRole('button', { name: '1个月', exact: true }).click();
+  await expect(page.getByRole('button', { name: '1个月', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('[name="history-cursor"]').focus(); await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.tooltip')).toBeVisible();
+  const csv = page.waitForEvent('download'); await page.getByRole('button', { name: '导出曲线 CSV' }).click();
+  expect((await csv).suggestedFilename()).toMatch(/\.csv$/);
+  await page.route('**/snapshot.json?*', route => route.fulfill({ status: 503, body: 'unavailable' }));
+  await page.getByRole('button', { name: '读取最新快照' }).click();
+  await expect(page.locator('.notice')).toContainText('快照读取失败，保留当前数据');
+  await expect(page.locator('#funds tbody tr')).toHaveCount(12);
+  const theme = page.getByRole('switch', { name: '深色模式' }); await theme.click();
+  const checked = await theme.getAttribute('aria-checked'); await page.reload();
+  await expect(theme).toHaveAttribute('aria-checked', checked);
+  expect(errors).toEqual([]);
+});
+
+test('calendar lazy load, time zones, filters, view, ICS and earnings', async ({ page }) => {
+  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/#calendar');
+  await expect(page.locator('.calendar-board')).toBeVisible();
+  await expect(page.locator('.calendar-cell')).toHaveCount(42);
+  await page.getByRole('button', { name: '美联储', exact: true }).click();
+  await page.getByRole('button', { name: '列表', exact: true }).click();
+  await expect(page.locator('.calendar-list-row')).not.toHaveCount(0);
+  await page.locator('.calendar-list-row').first().click();
+  await expect(page.locator('#cal-day-events')).toContainText('FOMC');
+  const beijing = await page.locator('.calendar-detail h2').textContent();
+  await page.getByLabel('日历时区').selectOption('America/New_York');
+  const eastern = await page.locator('.calendar-detail h2').textContent();
+  expect(beijing).not.toBe(eastern);
+  const ics = page.waitForEvent('download'); await page.getByRole('button', { name: '导出本月 ICS' }).click();
+  expect((await ics).suggestedFilename()).toMatch(/\.ics$/);
+  await page.getByRole('button', { name: '财报', exact: true }).click();
+  await page.locator('.earnings-roster summary').click();
+  await expect(page.locator('.earnings-roster tbody tr')).toHaveCount(20);
+  await page.locator('.earnings-date').first().click();
+  await expect(page.locator('.is-current-event')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+for (const width of [375, 768, 1024, 1440]) {
+  test(`layout, keyboard and accessibility at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'light' });
+    await page.goto('/');
+    await expect(page.locator('#funds tbody tr')).toHaveCount(12);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.getByRole('slider', { name: 'VIX 指针交互预览' }).focus();
+    const pointer = page.locator('.vix-pointer');
+    expect(await pointer.evaluate(el => getComputedStyle(el).transform)).not.toBe('none');
+    await page.keyboard.press('ArrowRight'); await page.keyboard.press('Escape');
+    let results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(results.violations).toEqual([]);
+    await page.getByRole('switch', { name: '深色模式' }).click();
+    results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(results.violations).toEqual([]);
+    await page.goto('/#calendar');
+    await expect(page.locator('.calendar-cell')).toHaveCount(42);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(results.violations).toEqual([]);
+    await page.screenshot({ path: `test-results/calendar-${width}.png`, fullPage: true });
+    await page.getByRole('link', { name: '溢价观察', exact: true }).last().click();
+    await expect(page.locator('#premium-page')).toBeVisible();
+    await page.screenshot({ path: `test-results/premium-${width}.png`, fullPage: true });
+  });
+}
