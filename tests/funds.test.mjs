@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { chartSeries, csvText, dateBounds, mergeFunds, validSnapshot } from '../src/lib/funds.js';
+import { MARKETS, fundsForMarket } from '../src/lib/markets.js';
 const snapshot = JSON.parse(await readFile(new URL('../data/snapshot.json', import.meta.url)));
 
 test('refresh rejects duplicated codes, malformed prices and missing funds', () => {
@@ -31,4 +32,24 @@ test('chart and CSV use only actual matching records in the selected range', () 
   assert.ok(csv.includes('同日单位净值'));
   const empty = chartSeries(funds, [funds[0].code], '1900-01-01', '1900-01-02');
   assert.equal(empty.dates.length, 0);
+});
+
+test('both index rosters have valid history and independent default comparisons', () => {
+  for (const [index, market] of Object.entries(MARKETS)) {
+    const funds = fundsForMarket(snapshot.funds, index);
+    assert.equal(funds.length, index === 'sp500' ? 4 : 12);
+    const bounds = dateBounds(funds, '3m');
+    const { series } = chartSeries(funds, market.defaults, bounds.start, bounds.end);
+    assert.equal(series.length, 3);
+    assert.ok(series.every(item => item.rows.length > 0 && item.fund.index === index));
+  }
+});
+
+test('legacy 12-fund browser cache preserves the four newly published funds', () => {
+  const legacy = structuredClone(snapshot.funds.slice(0, 12));
+  for (const fund of legacy) delete fund.index;
+  const merged = mergeFunds(snapshot.funds, legacy);
+  assert.equal(merged.length, 16);
+  assert.deepEqual(fundsForMarket(merged, 'sp500'), snapshot.funds.slice(12));
+  assert.equal(fundsForMarket(merged, 'nasdaq100').length, 12);
 });

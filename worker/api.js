@@ -11,8 +11,8 @@ async function fetchJSON(url,label){
  }
  throw Error(label+'获取失败（'+(last?.name==='AbortError'?'请求超时':last?.message||'网络错误')+'）');
 }
-async function liveFund(code){
- const fund=SNAPSHOT.funds.find(f=>f.code===code);if(!fund)throw Error('Unknown fund');
+export async function liveFund(fund){
+ const code=fund.code;
  const market=code.startsWith('5')?'1':'0';
  const nav=new Map(fund.history.map(r=>[r.date,r.nav]));
  // Fetch newest pages until they overlap the published history, without a 13-request burst.
@@ -21,12 +21,12 @@ async function liveFund(code){
   const result=await fetchJSON(`https://api.fund.eastmoney.com/f10/lsjz?fundCode=${code}&pageIndex=${page}&pageSize=20`,'净值');
   const rows=result.Data?.LSJZList;if(!Array.isArray(rows)||!rows.length)throw Error('净值源站未返回有效记录');
   for(const row of rows){if(Number(row.DWJZ)>0){nav.set(row.FSRQ,Number(row.DWJZ));received++}}
-  if(rows.at(-1).FSRQ<=fund.history.at(-1).date||rows.length<20)break;
+  if((fund.history.length&&rows.at(-1).FSRQ<=fund.history.at(-1).date)||rows.length<20)break;
  }
  const quoteURL=`https://push2his.eastmoney.com/api/qt/stock/kline/get?secid=${market}.${code}&klt=101&fqt=0&lmt=500&end=20500101&fields1=f1,f2,f3,f4,f5,f6&fields2=f51,f52,f53,f54,f55,f56,f57`;
  let result,quoteSource='东方财富';
  try{result=await fetchJSON(quoteURL,'行情')}catch{
-  try{result=await fetchJSON(quoteURL.replace('lmt=500','lmt=1'),'最新行情')}catch{
+  try{if(!fund.latest)throw Error('新基金需要完整历史');result=await fetchJSON(quoteURL.replace('lmt=500','lmt=1'),'最新行情')}catch{
    const symbol=(market==='1'?'sh':'sz')+code;
    const backup=await fetchJSON(`https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=${symbol},day,,,320,`,'备用行情');
    const entry=backup.data?.[symbol],rows=entry?.day,quote=entry?.qt?.[symbol];
@@ -40,12 +40,12 @@ async function liveFund(code){
  }
  const quote=result.data;if(!quote?.klines?.length||!received)throw Error('源站未返回有效行情或净值');
  const byDate=new Map(fund.history.map(r=>[r.date,{date:r.date,close:r.close,amount:r.amount,quoteSource:r.quoteSource||'东方财富'}]));
- byDate.set(fund.latest.date,{date:fund.latest.date,close:fund.latest.close,amount:fund.latest.amount,quoteSource:fund.quoteSource||'东方财富'});
+ if(fund.latest)byDate.set(fund.latest.date,{date:fund.latest.date,close:fund.latest.close,amount:fund.latest.amount,quoteSource:fund.quoteSource||'东方财富'});
  for(const row of quote.klines){const p=row.split(',');byDate.set(p[0],{date:p[0],close:Number(p[2]),amount:p[6]===''?byDate.get(p[0])?.amount??null:Number(p[6]),quoteSource})}
  const prices=[...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
  if(prices.some(p=>!Number.isFinite(p.close)||p.close<=0||(p.amount!==null&&!Number.isFinite(p.amount))))throw Error('行情数值无效');
  const history=prices.filter(p=>nav.has(p.date)).map(p=>({...p,nav:nav.get(p.date),premium:(p.close/nav.get(p.date)-1)*100}));
- const navDate=[...nav.keys()].sort().at(-1),price=prices.at(-1);if(navDate>price.date||price.date<fund.latest.date||navDate<fund.latest.navDate||!history.length)throw Error('源站数据日期异常，保留原数据');
+ const navDate=[...nav.keys()].sort().at(-1),price=prices.at(-1);if(navDate>price.date||(fund.latest&&(price.date<fund.latest.date||navDate<fund.latest.navDate))||!history.length||(!fund.latest&&history.length<200))throw Error('源站数据日期异常或历史不足，保留原数据');
  return {...fund,name:quote.name,quoteSource,history,latest:{...price,nav:nav.get(navDate),navDate,premium:(price.close/nav.get(navDate)-1)*100},fetchedAt:new Date().toISOString()};
 }
 export default {async fetch(request,env,ctx){
@@ -53,7 +53,7 @@ export default {async fetch(request,env,ctx){
  if(url.pathname==='/api/status')return Response.json({version:'refresh-v2',snapshotAt:SNAPSHOT.fetchedAt},{headers:{'Cache-Control':'no-store'}});
  if(url.pathname==='/api/fund'){
   const code=url.searchParams.get('code');if(!SNAPSHOT.funds.some(f=>f.code===code))return Response.json({error:'未知基金代码'},{status:400});
-  try{return Response.json(await liveFund(code),{headers:{'Cache-Control':'no-store'}})}catch(error){console.error('Fund refresh failed',code,error.message);return Response.json({error:error.message||'源站暂时不可用，请稍后重试。'},{status:502,headers:{'Cache-Control':'no-store'}})}
+  try{return Response.json(await liveFund(SNAPSHOT.funds.find(f=>f.code===code)),{headers:{'Cache-Control':'no-store'}})}catch(error){console.error('Fund refresh failed',code,error.message);return Response.json({error:error.message||'源站暂时不可用，请稍后重试。'},{status:502,headers:{'Cache-Control':'no-store'}})}
  }
  if(url.pathname==='/favicon.ico')return new Response(null,{status:204});
  if(url.pathname!=='/')return new Response('Not found',{status:404});

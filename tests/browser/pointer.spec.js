@@ -1,46 +1,56 @@
 import { test, expect } from '@playwright/test';
 
-test('iOS-style pointer follows, magnetizes, releases for precision and keyboard', async ({ page }) => {
+test('native pointer remains visible without any global pointer overlay or magnetism', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference', colorScheme: 'light' });
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('#funds tbody tr')).toHaveCount(12);
   await page.mouse.move(300, 205);
-  await expect(page.locator('html')).toHaveAttribute('data-ios-pointer', 'on');
-  await expect(page.locator('.ios-pointer')).toHaveCSS('pointer-events', 'none');
+  await expect(page.locator('.ios-pointer-layer')).toHaveCount(0);
   const button = page.getByRole('group', { name: '时间区间', exact: true }).getByRole('button', { name: '1个月', exact: true });
   await button.hover();
-  await expect(button).toHaveAttribute('data-ios-magnetic', '');
-  await expect(page.locator('html')).toHaveAttribute('data-ios-pointer-mode', 'magnetic');
-  await expect.poll(async () => (await page.locator('.ios-pointer').boundingBox()).width).toBeGreaterThan(40);
-  await expect(button).toHaveCSS('cursor', 'none');
-  await page.screenshot({ path: 'preview/ios-pointer-magnetic.png' });
-  await page.mouse.down();
-  await expect(button).toHaveAttribute('data-ios-pressed', '');
-  await page.mouse.up();
+  await expect(button).not.toHaveAttribute('data-ios-magnetic', '');
+  await expect(button).not.toHaveCSS('cursor', 'none');
+  await button.click();
   await expect(button).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('searchbox', { name: '搜索基金' }).hover();
   await expect(page.locator('html')).not.toHaveAttribute('data-ios-pointer', 'on');
   await page.getByRole('searchbox', { name: '搜索基金' }).fill('513100');
   await expect(page.locator('#funds tbody tr')).toHaveCount(1);
-  await button.hover();
-  await expect(page.locator('html')).toHaveAttribute('data-ios-pointer', 'on');
-  await page.keyboard.press('Tab');
-  await expect(page.locator('html')).not.toHaveAttribute('data-ios-pointer', 'on');
-  await button.hover();
-  await page.mouse.wheel(0, 180);
-  await expect(page.locator('html')).not.toHaveAttribute('data-ios-pointer', 'on');
   expect(errors).toEqual([]);
 });
 
-test('reduced motion retains native pointer', async ({ page }) => {
+test('reduced motion updates favorites immediately without a flying star', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  const button = page.getByRole('button', { name: '读取最新快照', exact: true });
-  await button.hover();
-  await expect(page.locator('html')).not.toHaveAttribute('data-ios-pointer', 'on');
-  await expect(button).not.toHaveCSS('cursor', 'none');
-  await expect(page.locator('.ios-pointer-layer')).toBeHidden();
+  await page.locator('.favorite').first().click();
+  await expect(page.locator('.favorite-flight')).toHaveCount(0);
+  await page.getByRole('button', { name: '我的关注', exact: true }).click();
+  await expect(page.locator('#funds tbody tr')).toHaveCount(1);
+});
+
+test('favorite star flies into My Favorites and rapid undo never restores it', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const button = page.locator('.favorite').first();
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.favorite-flight')).toBeVisible();
+  const start = await page.locator('.favorite-flight').boundingBox();
+  await expect.poll(async () => (await page.locator('.favorite-flight').boundingBox())?.y ?? -1).toBeLessThan(start.y - 1);
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('.favorite-flight')).toHaveCount(0);
+  await page.getByRole('button', { name: '我的关注', exact: true }).click();
+  await expect(page.locator('#funds tbody tr')).toHaveCount(0);
+  await page.getByRole('button', { name: '全部基金', exact: true }).click();
+  await page.locator('.favorite').first().click();
+  await expect(page.locator('.favorite-flight')).toHaveCount(0, { timeout: 2000 });
+  await page.getByRole('button', { name: '我的关注', exact: true }).click();
+  await expect(page.locator('#funds tbody tr')).toHaveCount(1);
+  await page.reload();
+  await page.getByRole('button', { name: '我的关注', exact: true }).click();
+  await expect(page.locator('#funds tbody tr')).toHaveCount(1);
 });
 
 test('upcoming strip height remains fixed with three, one and zero events', async ({ page }) => {
@@ -87,6 +97,6 @@ test.describe('touch pointer', () => {
     await page.getByRole('button', { name: '1个月', exact: true }).tap();
     await expect(page.getByRole('button', { name: '1个月', exact: true })).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('html')).not.toHaveAttribute('data-ios-pointer', 'on');
-    await expect(page.locator('.ios-pointer-layer')).toBeHidden();
+    await expect(page.locator('.ios-pointer-layer')).toHaveCount(0);
   });
 });

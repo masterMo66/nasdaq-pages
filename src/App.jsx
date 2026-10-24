@@ -3,7 +3,7 @@ import { ArrowUpRight, CalendarDays, ChartNoAxesCombined, CircleHelp, ListFilter
 import { AnimatePresence, m, useReducedMotion } from 'motion/react';
 import PremiumPage from './components/PremiumPage.jsx';
 import VixGauge from './components/VixGauge.jsx';
-import IOSPointer from './components/IOSPointer.jsx';
+import { MARKETS } from './lib/markets.js';
 import { mergeFunds, readSaved, snapshotStamp, validFund, validSnapshot } from './lib/funds.js';
 
 const CalendarPage = lazy(() => import('./components/CalendarPage.jsx'));
@@ -34,6 +34,7 @@ function Dashboard() {
   const [message, setMessage] = useState('');
   const [notice, setNotice] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [market, setMarket] = useState(() => { const saved = readSaved('nasdaq-market', 'nasdaq100'); return MARKETS[saved] ? saved : 'nasdaq100'; });
   const toastTimer = useRef();
   const requestRef = useRef();
   const calendar = ['#calendar', '#calendar-sources'].includes(hash);
@@ -87,19 +88,18 @@ function Dashboard() {
     <aside className="sidebar">
       <a className="brand" href="#overview" aria-label="纳指观测首页"><span className="brandmark" translate="no">N<span>·</span></span><span>纳指观测<small translate="no">NASDAQ OBSERVATORY</small></span></a>
       <div className="navcaption">工作空间</div>
-      <nav aria-label="主要导航">{links.map(([href, Icon, title]) => { const active = href === (calendar ? '#calendar' : ['#funds', '#method'].includes(hash) ? hash : '#overview'); return <a key={href} href={href} aria-label={title} title={title} className={`navlink ${active ? 'active' : ''}`} aria-current={active ? 'page' : undefined}><Icon size={18} aria-hidden="true" /><span>{title}</span>{href === '#funds' && <small>12</small>}</a>; })}</nav>
+      <nav aria-label="主要导航">{links.map(([href, Icon, title]) => { const active = href === (calendar ? '#calendar' : ['#funds', '#method'].includes(hash) ? hash : '#overview'); return <a key={href} href={href} aria-label={title} title={title} className={`navlink ${active ? 'active' : ''}`} aria-current={active ? 'page' : undefined}><Icon size={18} aria-hidden="true" /><span>{title}</span>{href === '#funds' && <small>{data?.funds.length ?? '—'}</small>}</a>; })}</nav>
     </aside>
     <main id="main-content" tabIndex={-1}>
-      <header className="topbar"><span className="breadcrumb">市场观察 <span>/</span> {calendar ? '美国重要日期' : '纳斯达克 100'}</span><VixGauge vix={data?.vix} /><div className="topbar-actions"><a href={calendar ? '#calendar-sources' : '#method'}>{calendar ? '日程来源' : '数据口径'}<ArrowUpRight size={13} aria-hidden="true" /></a><button className="theme-switch" type="button" role="switch" aria-checked={theme === 'dark'} aria-label="深色模式" title={theme === 'dark' ? '切换为浅色模式' : '切换为深色模式'} onClick={() => { const next = theme === 'dark' ? 'light' : 'dark'; setTheme(next); save('nasdaq-theme', next); }}><Sun size={15} aria-hidden="true" /><Moon size={15} aria-hidden="true" /><m.span className="theme-thumb" animate={{ x: theme === 'dark' ? 27 : 0 }} transition={{ type: 'spring', stiffness: 450, damping: 32 }} /></button></div></header>
+      <header className="topbar"><span className="breadcrumb">市场观察 <span>/</span> {calendar ? '美国重要日期' : MARKETS[market].name}</span><VixGauge vix={data?.vix} /><div className="topbar-actions"><a href={calendar ? '#calendar-sources' : '#method'}>{calendar ? '日程来源' : '数据口径'}<ArrowUpRight size={13} aria-hidden="true" /></a><button className="theme-switch" type="button" role="switch" aria-checked={theme === 'dark'} aria-label="深色模式" title={theme === 'dark' ? '切换为浅色模式' : '切换为深色模式'} onClick={() => { const next = theme === 'dark' ? 'light' : 'dark'; setTheme(next); save('nasdaq-theme', next); }}><Sun size={15} aria-hidden="true" /><Moon size={15} aria-hidden="true" /><m.span className="theme-thumb" animate={{ x: theme === 'dark' ? 27 : 0 }} transition={{ type: 'spring', stiffness: 450, damping: 32 }} /></button></div></header>
       <nav className="page-tabs" aria-label="网站页面">{[['#overview', '溢价观察', false], ['#calendar', '美国重要日期', true]].map(([href, title, isCal]) => <a key={href} href={href} className={calendar === isCal ? 'selected' : ''} aria-current={calendar === isCal ? 'page' : undefined}>{title}{calendar === isCal && <m.span className="page-underline" layoutId="page-underline" />}</a>)}</nav>
       {error ? <div className="load-state" role="alert"><h1>数据暂时无法加载</h1><p>{error}</p><button className="primary" onClick={() => location.reload()}>重试</button></div> : !data ? <Loading /> : <>
-        <m.div hidden={calendar} initial={false} animate={{ opacity: calendar && !reduced ? 0 : 1, y: calendar && !reduced ? 10 : 0 }} transition={{ duration: reduced ? 0 : .3, ease: [.22, 1, .36, 1] }}><PremiumPage data={data} notice={notice} refreshing={refreshing} refresh={refresh} notify={notify} save={save} /></m.div>
+        <m.div hidden={calendar} initial={false} animate={{ opacity: calendar && !reduced ? 0 : 1, y: calendar && !reduced ? 10 : 0 }} transition={{ duration: reduced ? 0 : .3, ease: [.22, 1, .36, 1] }}><PremiumPage data={data} market={market} onMarketChange={next => { setMarket(next); save('nasdaq-market', next); }} notice={notice} refreshing={refreshing} refresh={refresh} notify={notify} save={save} /></m.div>
         {(calendar || calendarVisited) && <m.div hidden={!calendar} initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 10 }} animate={{ opacity: !calendar && !reduced ? 0 : 1, y: !calendar && !reduced ? 10 : 0 }} transition={{ duration: reduced ? 0 : .3, ease: [.22, 1, .36, 1] }}><Suspense fallback={<Loading />}><CalendarPage notify={notify} hash={hash} /></Suspense></m.div>}
       </>}
       <footer><span>纳指观测</span><span>数据仅供研究参考，不构成投资建议。</span></footer>
     </main>
     <div className="toast-region" role="status" aria-live="polite"><AnimatePresence>{message && <m.div className="toast" key={message} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }}>{message}</m.div>}</AnimatePresence></div>
-    <IOSPointer />
   </>;
 }
 function Loading() { return <div className="load-state" role="status"><span className="loading-line" /><p>正在读取市场数据…</p></div>; }

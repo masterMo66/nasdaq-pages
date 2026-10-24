@@ -85,7 +85,7 @@ main { width: calc(100% - var(--rail)); max-width: 1304px; margin-left: calc(var
 .page-tabs>a { position: relative; display: block; padding: 16px 0; color: var(--muted); font-size: 13px; }
 .page-tabs>a:hover, .page-tabs>a.selected { color: var(--accent); }.page-tabs>a.selected { font-weight: 600; }
 .page-underline { position: absolute; bottom: -1px; height: 2px; background: var(--accent); left: 0; right: 0; }
-.page-actions { display: flex; justify-content: flex-end; padding: 20px 0; }
+.page-actions { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 20px 0; }
 .page-actions .introaction { display: flex; flex-direction: row; align-items: center; gap: 18px; }
 .eyebrow { font: 10px/1.7 var(--mono); letter-spacing: 1.8px; color: var(--muted); }
 .introaction { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
@@ -205,23 +205,13 @@ tbody tr { transition: background-color 180ms ease; }
 .compare-icon-slot { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 16px; flex-shrink: 0; }
 .compare-icon { display: inline-flex; align-items: center; justify-content: center; }
 
-/* iPad-style pointer: a filled shape, never a focus border or hit target. */
-.ios-pointer-layer { position: fixed; inset: 0; z-index: 1000; overflow: clip; pointer-events: none; }
-.ios-pointer { position: absolute; left: 0; top: 0; pointer-events: none; background: color-mix(in srgb, var(--ink) 36%, transparent); transform-origin: center; will-change: transform; transition: background-color 150ms ease; }
-[data-ios-pointer-mode='magnetic'] .ios-pointer { background: color-mix(in srgb, var(--accent) 13%, transparent); }
-[data-theme='dark'][data-ios-pointer-mode='magnetic'] .ios-pointer { background: color-mix(in srgb, var(--accent) 17%, transparent); }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
-  html[data-ios-pointer='on'], html[data-ios-pointer='on'] * { cursor: none !important; }
-  [data-ios-magnetic] { scale: 1.025; transition: scale 220ms cubic-bezier(.2,.9,.3,1.2), background-color 140ms, color 140ms, border-color 140ms; }
-  [data-ios-magnetic][data-ios-pressed] { scale: .99; }
-  .segmented>button[data-ios-magnetic]>span:last-child,
-  .navlink[data-ios-magnetic]>span { translate: var(--ios-pointer-dx, 0px) var(--ios-pointer-dy, 0px); }
-}
+.tabletools { position: sticky; top: 0; z-index: 8; background: var(--bg); padding: 8px 0; }
+.segment-count { display: inline-block; margin-left: 5px; padding: 0 4px; min-width: 18px; border-radius: 4px; background: var(--soft); color: var(--accent); font-size: 10px; font-variant-numeric: tabular-nums; }
+.favorite-flight { position: fixed; z-index: 100; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--panel); color: var(--accent); box-shadow: 0 3px 12px #183c2820; pointer-events: none; will-change: transform, opacity; }
 @media (max-width: 700px) {
   .next-events { height: 310px; grid-template-rows: 24px minmax(0,1fr); padding: 24px 0; }
   .upcoming-grid { height: 220px; grid-template-rows: repeat(3,minmax(0,1fr)); gap: 8px; }
   .upcoming-grid>.subtle { grid-row: 1/-1; }
   .upcoming-event { min-height: 0; }
 }
-@media (hover: none), (pointer: coarse), (forced-colors: active) { .ios-pointer-layer { display: none; } }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; }*,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }.spinning { animation: none; }.calendar-event:not(:disabled):hover, .favorite:hover svg { transform: none; }.ios-pointer-layer { display: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; }*,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }.spinning { animation: none; }.calendar-event:not(:disabled):hover, .favorite:hover svg { transform: none; } }
