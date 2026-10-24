@@ -10,6 +10,8 @@
   --font: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
   --mono: 'Cascadia Code', Consolas, 'Microsoft YaHei', monospace;
   --motion-fast: 140ms; --motion-normal: 220ms;
+  --metric-bg: #edf3f0; --metric-ink: #183d32;
+  --metric-hover-bg: #0b5e4b; --metric-hover-ink: #ffffff; --card-hover-bg: #f0f6f2;
 }
 [data-theme='dark'] {
   color-scheme: dark;
@@ -17,6 +19,8 @@
   --muted: #a6bbaf; --line: #354a3e; --accent: #89d8b6; --soft: #233e30;
   --up: #f0b087; --grid: #2d4035; --on-accent: #10291d;
   --series-1: #79c9aa; --series-2: #dfb375; --series-3: #a5c1ec; --series-4: #d6a5ce;
+  --metric-bg: #20362d; --metric-ink: #edf8f1;
+  --metric-hover-bg: #9cddbf; --metric-hover-ink: #102b1e; --card-hover-bg: #1d3027;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 24px; }
@@ -208,10 +212,53 @@ tbody tr { transition: background-color 180ms ease; }
 .tabletools { position: sticky; top: 0; z-index: 8; background: var(--bg); padding: 8px 0; }
 .segment-count { display: inline-block; margin-left: 5px; padding: 0 4px; min-width: 18px; border-radius: 4px; background: var(--soft); color: var(--accent); font-size: 10px; font-variant-numeric: tabular-nums; }
 .favorite-flight { position: fixed; z-index: 100; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--panel); color: var(--accent); box-shadow: 0 3px 12px #183c2820; pointer-events: none; will-change: transform, opacity; }
+
+/* A full-cell native date button sits beneath independent event buttons. */
+.calendar-cell { position: relative; isolation: isolate; padding-top: 42px; transition: box-shadow 180ms ease; }
+.calendar-cell::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; border: 2px solid var(--accent); opacity: 0; transition: opacity 140ms ease; }
+.calendar-cell:has(.day-select:active)::after { opacity: 1; }
+.calendar-cell.selected-day::after { border-color: var(--on-accent); }
+.calendar-cell .day-select { position: absolute; inset: 0; width: 100%; display: flex; align-items: flex-start; justify-content: flex-start; padding: 7px 5px; color: inherit; border: 0; border-radius: 0; background: transparent; text-align: left; }
+.calendar-cell .day-select:not(:disabled):hover { background: transparent; }
+.calendar-cell .day-select:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.day-select .day-number { width: 28px; height: 28px; margin: 0; border-radius: 7px; transition: background-color 180ms ease, color 180ms ease; }
+.calendar-cell.outside .day-number { opacity: 1; color: var(--muted); }
+.day-number.today { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); font-weight: 700; }
+.calendar-cell.selected-day { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+.selected-day .day-number { background: var(--panel); color: var(--accent); font-weight: 700; box-shadow: none; }
+.selected-day .day-select:focus-visible { box-shadow: inset 0 0 0 2px var(--on-accent); }
+.day-selected-check { position: absolute; top: 14px; right: 8px; color: var(--on-accent); }
+.calendar-day-events { position: relative; z-index: 1; pointer-events: none; }
+.calendar-day-events>button { pointer-events: auto; }
+.calendar-cell .calendar-event { position: relative; border: 1px solid color-mix(in srgb, var(--event-color) 30%, transparent); border-left: 3px solid var(--event-color); transition: box-shadow 180ms ease, transform 180ms ease; }
+.selected-day .calendar-event { background: var(--panel); }
+.selected-day .more-events { color: var(--on-accent); }
+.selected-day .more-events:not(:disabled):hover { color: var(--accent); background: var(--panel); }
+.calendar-cell .calendar-event:not(:disabled):is(:hover, :focus-visible),
+.calendar-cell .calendar-event[aria-pressed='true'] { background: var(--event-color); color: var(--panel); box-shadow: inset 0 0 0 1px var(--panel), 0 2px 6px #0002; }
+.calendar-event[aria-pressed='true'] { padding-right: 15px; }
+.calendar-event-check { position: absolute; top: 5px; right: 3px; }
+
+/* Opaque value surfaces preserve contrast while the card changes color. */
+/* Switch each text/background pair together; color interpolation can wash it out. */
+.stat-card-value { background: var(--metric-bg); color: var(--metric-ink); transition: none; }
+.stat-range { width: 100%; display: grid; gap: 7px; }
+.stat-range-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+.stat-range-row>span { font-size: 11px; white-space: nowrap; }
+.stat-card-value-compact .stat-range-row>strong { font-size: clamp(15px, 1.35vw, 19px); letter-spacing: -.5px; white-space: nowrap; }
+@media (hover: hover) and (pointer: fine) {
+  .calendar-cell:not(.selected-day):not(.is-disabled):has(.day-select:hover) { background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .stat-card-shell:hover .stat-card-history { background: var(--card-hover-bg); }
+  .stat-card-shell:hover .stat-card-history .stat-card-value { background: var(--metric-hover-bg); color: var(--metric-hover-ink); }
+}
 @media (max-width: 700px) {
   .next-events { height: 310px; grid-template-rows: 24px minmax(0,1fr); padding: 24px 0; }
   .upcoming-grid { height: 220px; grid-template-rows: repeat(3,minmax(0,1fr)); gap: 8px; }
   .upcoming-grid>.subtle { grid-row: 1/-1; }
   .upcoming-event { min-height: 0; }
+  .calendar-cell { padding-top: 38px; }
+  .calendar-cell .day-select { justify-content: center; padding: 5px 2px; }
+  .day-selected-check { top: 6px; right: 3px; width: 10px; height: 10px; }
+  .stat-card-value-compact .stat-range-row>strong { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; }*,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }.spinning { animation: none; }.calendar-event:not(:disabled):hover, .favorite:hover svg { transform: none; } }

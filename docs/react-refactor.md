@@ -95,3 +95,13 @@ pnpm test:e2e
 | 国泰标普 500 ETF | 159612 | [国泰产品资料](https://st.gtfund.com/pis/www/CN_50010000_159612_FA010080_20250001_159612_20250930_090000_01.pdf) |
 
 验证：生产构建、16 只基金公式、161 项事件与时区 / ICS 校验通过；8 项单元测试、17 项浏览器回归全部通过，包含首次采集、缺失数据拒绝、旧缓存迁移、关注快速撤销、双指数切换与导出、四种宽度及深浅主题。375px 标普页 axe 报告零违规。主 JS gzip 约 140.49 kB，CSS gzip 约 7.37 kB；未新增依赖。截图见忽略目录 `preview/sp500-mobile-light.png` 与 `preview/sp500-mobile-dark.png`。
+
+## 日历整格选择与状态对比度（2026-10-24）
+
+使用 UI/UX Pro Max 的 `selected state color contrast --domain ux` 与 `buttons --stack react`，采用原生按钮、至少 4.5:1 的正文对比和颜色以外的选中标记。
+
+日期按钮覆盖整格，事件和“更多”按钮作为同级控件显示在上层，空白区域仍可选中日期，无嵌套按钮。支持触控、Enter / Space、当前日期标记和范围边界禁用。选中格改为实色底，日期徽标和事件标签使用各自不透明底色，选择事件时反色并显示勾选。悬停、按压和内侧高亮不改变格子布局。
+
+历史统计的最高 / 最低拆为两行并放大数字，其他卡片沿用不透明高对比数值区。悬停时文字和底色同步反转，外壳保留浮起、倾斜、阴影变化。删除会让中间帧出现低对比的明暗底色插值；主题切换同样成对更新文字与底色。
+
+新增浏览器检查覆盖整格空白点击、独立事件点击、键盘切换、375px 触控、六类事件在深浅主题下的选中 / 悬停 / 点击对比，以及统计卡片和主题切换的对比。截图位于忽略目录 `preview/calendar-selection-light.png`、`preview/calendar-selection-dark.png`、`preview/calendar-touch-selection.png`、`preview/stat-range-hover-light.png` 与 `preview/stat-range-hover-dark.png`。

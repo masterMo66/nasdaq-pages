@@ -3,7 +3,7 @@ import { AnimatePresence, m, useMotionValue, useReducedMotion, useSpring } from 
 
 const CARD_SPRING = { stiffness: 240, damping: 23, mass: .8 };
 
-export default function StatCard({ label, value, note, icon: Icon, featured = false, compact = false, variant = 'history' }) {
+export default function StatCard({ label, value, breakdown, note, icon: Icon, featured = false, compact = false, variant = 'history' }) {
   const reduced = useReducedMotion();
   const bounds = useRef(null);
   const targetX = useMotionValue(0), targetY = useMotionValue(0), targetLift = useMotionValue(0);
@@ -35,9 +35,12 @@ export default function StatCard({ label, value, note, icon: Icon, featured = fa
       <m.span className="stat-card-light" aria-hidden="true" style={{ x: glowX, y: glowY, opacity: reduced ? 0 : opacity }} />
       <div className="stat-card-label">{Icon && <span className="stat-card-icon"><Icon size={15} aria-hidden="true" /></span>}<span>{label}</span></div>
       <div className={`stat-card-value ${compact ? 'stat-card-value-compact' : ''}`}>
-        <AnimatePresence initial={false} mode="popLayout"><m.strong key={typeof value === 'string' ? value : 'value'}
+        <AnimatePresence initial={false} mode="popLayout">{breakdown ? <m.div className="stat-range" key={breakdown.map(item => item.value).join('/')}
+          initial={{ opacity: 0, y: reduced ? 0 : 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduced ? 0 : -6 }} transition={{ duration: reduced ? 0 : .22 }}>
+          {breakdown.map(item => <div className="stat-range-row" key={item.label}><span>{item.label}</span><strong>{item.value}</strong></div>)}
+        </m.div> : <m.strong key={typeof value === 'string' ? value : 'value'}
           initial={{ opacity: 0, y: reduced ? 0 : 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduced ? 0 : -6 }}
-          transition={{ duration: reduced ? 0 : .22, ease: [.22, 1, .36, 1] }}>{value}</m.strong></AnimatePresence>
+          transition={{ duration: reduced ? 0 : .22, ease: [.22, 1, .36, 1] }}>{value}</m.strong>}</AnimatePresence>
       </div>
       {note && <span className="stat-card-note">{note}</span>}
     </m.article>
