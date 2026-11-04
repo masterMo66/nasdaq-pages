@@ -1,18 +1,18 @@
 {
-  "checkedAt": "2026-11-04T07:31:41.214Z",
+  "checkedAt": "2026-11-04T18:00:48.448Z",
   "scope": "Availability and change detection only; not semantic review",
   "sources": [
     {
       "url": "https://www.bls.gov/schedule/2026/home.htm",
-      "checkedAt": "2026-11-04T07:31:41.214Z",
+      "checkedAt": "2026-11-04T18:00:48.448Z",
       "status": "ok",
       "hash": "45edf9cc824f317bb9e714e4763744f8decd745f666454bc78676e4a3325c0f6",
-      "changed": true,
+      "changed": false,
       "requiresReview": true
     },
     {
       "url": "https://www.bls.gov/schedule/2027/home.htm",
-      "checkedAt": "2026-11-04T07:31:41.214Z",
+      "checkedAt": "2026-11-04T18:00:48.448Z",
       "status": "ok",
       "hash": "adc95365efa2f193c5f41a7cdc4221fc7ce89cebe831f33c7cc56c89082437cc",
       "changed": false,
@@ -20,25 +20,25 @@
     },
     {
       "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "checkedAt": "2026-11-04T07:31:41.214Z",
+      "checkedAt": "2026-11-04T18:00:48.448Z",
       "status": "ok",
-      "hash": "0a12e35ad163d78a3d0b9486444adcd6d26c093af283fde01c2a4af1f2e552b5",
+      "hash": "b8158b8f18dfe65a4d8357315ab864837bab481cc13034aa4e92838e8adebee3",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bea.gov/news/schedule/full",
-      "checkedAt": "2026-11-04T07:31:41.214Z",
+      "checkedAt": "2026-11-04T18:00:48.448Z",
       "status": "ok",
-      "hash": "cec142a0459a3c6bd361013df7dac616cba1a7af4bcdc70ddd0c97e5389a29e9",
+      "hash": "92de615e4a4a89a053a9389724ba334085b95d6fe5b1e5387629d396786b3f7e",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
-      "checkedAt": "2026-11-04T07:31:41.214Z",
+      "checkedAt": "2026-11-04T18:00:48.448Z",
       "status": "ok",
-      "hash": "129e66bc4e2dac7230220ec40921c0e3c54b5df3eb1ffc25a90e1d3638804355",
+      "hash": "624f0c0695bb42e25beb6ea5c02212e2219de2f3e9d4adbc067fd54aaa2195f7",
       "changed": true,
       "requiresReview": true
     }
