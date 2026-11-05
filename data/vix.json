@@ -3,7 +3,7 @@
   "name": "Cboe Volatility Index",
   "source": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
   "sourcePage": "https://www.cboe.com/tradable-products/vix/vix-historical-data/",
-  "fetchedAt": "2026-11-05T07:56:41.517Z",
+  "fetchedAt": "2026-11-05T18:03:04.080Z",
   "history": [
     {
       "date": "2026-08-13",
