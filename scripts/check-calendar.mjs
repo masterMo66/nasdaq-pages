@@ -20,16 +20,19 @@ for(const event of CALENDAR.events){assert.ok(event.source.startsWith('https://'
 for(const event of CALENDAR.events){
  assert.ok(event.summary?.length>20);assert.equal(event.verifiedAt,event.type==='EARNINGS'?(EARNINGS.companies.find(c=>c.ticker===event.ticker).verifiedAt||EARNINGS.verifiedAt):(CALENDAR_REVIEW.events[event.id]?.verifiedAt||CALENDAR.verifiedAt));
  for(const link of [event.source,event.overviewSource,event.resultSource].filter(Boolean)){
-  const url=new URL(link);assert.equal(url.protocol,'https:');if(event.type==='EARNINGS'){const company=EARNINGS.companies.find(c=>c.ticker===event.ticker);assert.ok([company.source,company.ir].includes(link))}else assert.ok(['www.bls.gov','www.bea.gov','www.federalreserve.gov','www.fec.gov'].includes(url.hostname));
+  const url=new URL(link);assert.equal(url.protocol,'https:');if(event.type==='EARNINGS'){const company=EARNINGS.companies.find(c=>c.ticker===event.ticker);assert.ok([company.source,company.ir,company.resultSource].includes(link))}else assert.ok(['www.bls.gov','www.bea.gov','www.federalreserve.gov','www.fec.gov'].includes(url.hostname));
  }
  if(event.resultSummary){assert.ok(event.resultSource);assert.ok(event.resultVerifiedAt>=event.date)}
 }
 const election=CALENDAR.events.find(e=>e.type==='MIDTERMS');assert.equal(election.date,'2026-11-03');assert.equal(election.instant,null);assert.ok(election.allDay);
 assert.equal(EARNINGS.companies.length,20);assert.deepEqual(EARNINGS.companies.map(c=>c.rank),Array.from({length:20},(_,i)=>i+1));
 assert.equal(new Set(EARNINGS.companies.map(c=>c.ticker)).size,20);assert.ok(EARNINGS.companies.find(c=>c.ticker==='GOOGL').aliases.includes('GOOG'));
-assert.equal(CALENDAR.events.filter(e=>e.type==='EARNINGS').length,17);
+assert.equal(CALENDAR.events.filter(e=>e.type==='EARNINGS').length,19);
 for(const c of EARNINGS.companies){assert.ok(c.note);assert.ok(c.source.startsWith('https://'));assert.equal(CALENDAR.events.some(e=>e.ticker===c.ticker),!!c.date)}
-assert.deepEqual(EARNINGS.companies.filter(c=>!c.date).map(c=>c.ticker),['AVGO','BRK-B','MU']);
+assert.deepEqual(EARNINGS.companies.filter(c=>!c.date).map(c=>c.ticker),['AVGO','MU']);
+const berkshire=CALENDAR.events.find(e=>e.ticker==='BRK-B');assert.equal(berkshire.instant,'2026-11-07T13:00:00.000Z');assert.ok(berkshire.approximate);assert.ok(berkshire.resultSource.endsWith('/nov0726.pdf'));
+const nvidia=CALENDAR.events.find(e=>e.ticker==='NVDA');assert.equal(nvidia.kind,'release');assert.equal(nvidia.instant,'2026-11-17T21:20:00.000Z');assert.equal(calendarClock(nvidia.callInstant),'06:00');assert.ok(!nvidia.resultSummary);
+const nextJpm=CALENDAR.events.find(e=>e.id==='EARNINGS-JPM-2027-01-14');assert.equal(nextJpm.instant,'2027-01-14T11:45:00.000Z');assert.ok(CALENDAR.events.some(e=>e.id==='EARNINGS-JPM-2026-10-13'));assert.ok(!nextJpm.resultSummary);
 const apple=CALENDAR.events.find(e=>e.ticker==='AAPL'),microsoft=CALENDAR.events.find(e=>e.ticker==='MSFT'),walmart=CALENDAR.events.find(e=>e.ticker==='WMT');
 assert.equal(apple.kind,'call');assert.equal(calendarDate(apple.instant),'2026-11-03');assert.equal(calendarClock(apple.instant),'06:00');
 assert.equal(microsoft.instant,null);assert.ok(microsoft.dateOnly);assert.equal(microsoft.timeLabel,'美东盘后');assert.equal(calendarClock(microsoft.callInstant),'05:30');
