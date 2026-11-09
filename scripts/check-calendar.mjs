@@ -27,9 +27,9 @@ for(const event of CALENDAR.events){
 const election=CALENDAR.events.find(e=>e.type==='MIDTERMS');assert.equal(election.date,'2026-11-03');assert.equal(election.instant,null);assert.ok(election.allDay);
 assert.equal(EARNINGS.companies.length,20);assert.deepEqual(EARNINGS.companies.map(c=>c.rank),Array.from({length:20},(_,i)=>i+1));
 assert.equal(new Set(EARNINGS.companies.map(c=>c.ticker)).size,20);assert.ok(EARNINGS.companies.find(c=>c.ticker==='GOOGL').aliases.includes('GOOG'));
-assert.equal(CALENDAR.events.filter(e=>e.type==='EARNINGS').length,19);
+assert.equal(CALENDAR.events.filter(e=>e.type==='EARNINGS').length,20);
 for(const c of EARNINGS.companies){assert.ok(c.note);assert.ok(c.source.startsWith('https://'));assert.equal(CALENDAR.events.some(e=>e.ticker===c.ticker),!!c.date)}
-assert.deepEqual(EARNINGS.companies.filter(c=>!c.date).map(c=>c.ticker),['AVGO','MU']);
+assert.deepEqual(EARNINGS.companies.filter(c=>!c.date).map(c=>c.ticker),['MU']);
 const berkshire=CALENDAR.events.find(e=>e.ticker==='BRK-B');assert.equal(berkshire.instant,'2026-11-07T13:00:00.000Z');assert.ok(berkshire.approximate);assert.ok(berkshire.resultSource.endsWith('/nov0726.pdf'));
 const nvidia=CALENDAR.events.find(e=>e.ticker==='NVDA');assert.equal(nvidia.kind,'release');assert.equal(nvidia.instant,'2026-11-17T21:20:00.000Z');assert.equal(calendarClock(nvidia.callInstant),'06:00');assert.ok(!nvidia.resultSummary);
 const nextJpm=CALENDAR.events.find(e=>e.id==='EARNINGS-JPM-2027-01-14');assert.equal(nextJpm.instant,'2027-01-14T11:45:00.000Z');assert.ok(CALENDAR.events.some(e=>e.id==='EARNINGS-JPM-2026-10-13'));assert.ok(!nextJpm.resultSummary);
@@ -47,3 +47,5 @@ for(const line of ics.split('\r\n'))assert.ok(Buffer.byteLength(line,'utf8')<=75
 const published=JSON.parse(await readFile('dist/calendar.json','utf8'));
 assert.deepEqual(published,CALENDAR);
 console.log(`${CALENDAR.events.length} events, 20-company roster, confirmed earnings, DST, date-only markers, ICS and published calendar passed.`);
+
+const broadcom=CALENDAR.events.find(e=>e.ticker==='AVGO');assert.equal(broadcom.date,'2026-12-09');assert.equal(broadcom.instant,null);assert.equal(broadcom.timeLabel,'美东盘后');assert.equal(calendarDate(broadcom.callInstant),'2026-12-10');assert.equal(calendarClock(broadcom.callInstant),'06:00');assert.ok(!broadcom.resultSummary);
