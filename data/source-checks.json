@@ -1,10 +1,10 @@
 {
-  "checkedAt": "2026-11-09T20:46:32.533Z",
+  "checkedAt": "2026-11-10T08:27:23.443Z",
   "scope": "Availability and change detection only; not semantic review",
   "sources": [
     {
       "url": "https://www.bls.gov/schedule/2026/home.htm",
-      "checkedAt": "2026-11-09T20:46:32.533Z",
+      "checkedAt": "2026-11-10T08:27:23.443Z",
       "status": "ok",
       "hash": "45edf9cc824f317bb9e714e4763744f8decd745f666454bc78676e4a3325c0f6",
       "changed": false,
@@ -12,7 +12,7 @@
     },
     {
       "url": "https://www.bls.gov/schedule/2027/home.htm",
-      "checkedAt": "2026-11-09T20:46:32.533Z",
+      "checkedAt": "2026-11-10T08:27:23.443Z",
       "status": "ok",
       "hash": "adc95365efa2f193c5f41a7cdc4221fc7ce89cebe831f33c7cc56c89082437cc",
       "changed": false,
@@ -20,25 +20,25 @@
     },
     {
       "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "checkedAt": "2026-11-09T20:46:32.533Z",
+      "checkedAt": "2026-11-10T08:27:23.443Z",
       "status": "ok",
-      "hash": "debe3fe5231bd4bd3cb4b7020065e2e65ba46b224ad131163d9b0d1d6d8cef7a",
+      "hash": "2b6323275c4ac92023dbbe80b63c1f289f88540683e0bd54fa14b0b66b69c0de",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bea.gov/news/schedule/full",
-      "checkedAt": "2026-11-09T20:46:32.533Z",
+      "checkedAt": "2026-11-10T08:27:23.443Z",
       "status": "ok",
-      "hash": "0d3eaf38bb28374d1144e9b4e99ea52ddf81e25e662295d10ca8c6a471ecfc8d",
+      "hash": "40f785c66319542ff1b43830bb71ca5c2725016bc8e1e3642c0832df8765d9e5",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
-      "checkedAt": "2026-11-09T20:46:32.533Z",
+      "checkedAt": "2026-11-10T08:27:23.443Z",
       "status": "ok",
-      "hash": "703974d4d6f0dfd34468014346e23d6fa8398b5fe8f71a3821909be3254fea6a",
+      "hash": "81d9f250edeecc5f9cbd60db9144e639a65ea95e3bd83da71b3fa8744ad0acbc",
       "changed": true,
       "requiresReview": true
     }

@@ -3,12 +3,8 @@
   "name": "Cboe Volatility Index",
   "source": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
   "sourcePage": "https://www.cboe.com/tradable-products/vix/vix-historical-data/",
-  "fetchedAt": "2026-11-09T20:46:32.142Z",
+  "fetchedAt": "2026-11-10T08:27:23.121Z",
   "history": [
-    {
-      "date": "2026-08-17",
-      "close": 15.19
-    },
     {
       "date": "2026-08-18",
       "close": 15.84
@@ -244,12 +240,16 @@
     {
       "date": "2026-11-06",
       "close": 25.64
+    },
+    {
+      "date": "2026-11-09",
+      "close": 19.92
     }
   ],
   "latest": {
-    "date": "2026-11-06",
-    "close": 25.64,
-    "change": -2.539999999999999,
-    "changePercent": -9.013484740951029
+    "date": "2026-11-09",
+    "close": 19.92,
+    "change": -5.719999999999999,
+    "changePercent": -22.30889235569422
   }
 }
