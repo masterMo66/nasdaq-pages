@@ -1,44 +1,44 @@
 {
-  "checkedAt": "2026-11-10T08:27:23.443Z",
+  "checkedAt": "2026-11-10T17:53:02.091Z",
   "scope": "Availability and change detection only; not semantic review",
   "sources": [
     {
       "url": "https://www.bls.gov/schedule/2026/home.htm",
-      "checkedAt": "2026-11-10T08:27:23.443Z",
+      "checkedAt": "2026-11-10T17:53:02.091Z",
       "status": "ok",
-      "hash": "45edf9cc824f317bb9e714e4763744f8decd745f666454bc78676e4a3325c0f6",
-      "changed": false,
+      "hash": "33e5a825643237c72bec0a58738d0a6d101ffab03b3cf0f509dfb1592c5a4c25",
+      "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bls.gov/schedule/2027/home.htm",
-      "checkedAt": "2026-11-10T08:27:23.443Z",
+      "checkedAt": "2026-11-10T17:53:02.091Z",
       "status": "ok",
-      "hash": "adc95365efa2f193c5f41a7cdc4221fc7ce89cebe831f33c7cc56c89082437cc",
-      "changed": false,
-      "requiresReview": false
+      "hash": "8206009b9d936f89af6585f8f67a60ca17513652e8f95933ab309f260e4aac2f",
+      "changed": true,
+      "requiresReview": true
     },
     {
       "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "checkedAt": "2026-11-10T08:27:23.443Z",
+      "checkedAt": "2026-11-10T17:53:02.091Z",
       "status": "ok",
-      "hash": "2b6323275c4ac92023dbbe80b63c1f289f88540683e0bd54fa14b0b66b69c0de",
+      "hash": "c81da908dc87ee833370e8dc17c83574238418098e4372fb84d95ff924e59b8c",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bea.gov/news/schedule/full",
-      "checkedAt": "2026-11-10T08:27:23.443Z",
+      "checkedAt": "2026-11-10T17:53:02.091Z",
       "status": "ok",
-      "hash": "40f785c66319542ff1b43830bb71ca5c2725016bc8e1e3642c0832df8765d9e5",
+      "hash": "f049b66b0fbf1f077a2057279d4052d6ada12d5a459bb175d1c36667c81f2af1",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
-      "checkedAt": "2026-11-10T08:27:23.443Z",
+      "checkedAt": "2026-11-10T17:53:02.091Z",
       "status": "ok",
-      "hash": "81d9f250edeecc5f9cbd60db9144e639a65ea95e3bd83da71b3fa8744ad0acbc",
+      "hash": "38b9b2a617434cbe0789edd92c35dfb282ed207d13ba383ec4b2f7983b2cc7a1",
       "changed": true,
       "requiresReview": true
     }
