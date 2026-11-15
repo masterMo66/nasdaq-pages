@@ -25,6 +25,7 @@ bls('NFP',2026,'01-09 02-11 03-06 04-03 05-08 06-05 07-02 08-07 09-04 10-02 11-0
 bls('PPI',2026,'01-30 02-27 03-18 04-14 05-13 06-11 07-15 08-13 09-10 10-15 11-13 12-15');
 add('PPI','2026-01-14','08:30','https://www.bls.gov/schedule/2026/home.htm','统计期：2025年11月；特殊调整后的官方发布时间。');
 for(const [date,period] of [['01-07','2025年11月'],['02-05','2025年12月'],['03-13','2026年1月'],['03-31','2026年2月'],['05-05','2026年3月'],['06-02','2026年4月'],['06-30','2026年5月'],['08-04','2026年6月'],['09-01','2026年7月'],['09-29','2026年8月'],['11-03','2026年9月'],['12-01','2026年10月']])add('JOLTS','2026-'+date,'10:00','https://www.bls.gov/schedule/2026/home.htm','统计期：'+period+'；按 BLS 正式日程。');
+for(const [date,period] of [['01-05','2026年11月'],['02-02','2026年12月'],['03-09','2027年1月'],['03-30','2027年2月'],['05-04','2027年3月'],['06-02','2027年4月'],['06-29','2027年5月'],['08-03','2027年6月'],['08-31','2027年7月'],['10-05','2027年8月'],['11-02','2027年9月'],['12-01','2027年10月']])add('JOLTS','2027-'+date,'10:00','https://www.bls.gov/schedule/2027/home.htm','统计期：'+period+'；按 BLS 正式日程。');
 bls('CPI',2027,'01-13 02-11 03-10 04-13 05-12 06-10 07-14 08-11 09-14 10-14 11-10 12-10');
 bls('NFP',2027,'01-08 02-05 03-05 04-02 05-07 06-04 07-02 08-06 09-03 10-08 11-05 12-03');
 bls('PPI',2027,'01-14 02-12 03-12 04-14 05-13 06-11 07-15 08-10 09-10 10-15 11-12 12-15');
@@ -43,4 +44,4 @@ for(const [date,period,stage] of [['01-22','2025年第三季度','更新值'],['
 events.push({id:'MIDTERMS-2026-11-03',type:'MIDTERMS',name:'美国中期选举 · 投票日',short:'中期选举',category:'politics',focus:true,date:'2026-11-03',instant:null,allDay:true,source:'https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/',details:'美国当地11月3日投票，各州投票时间不同；计票与最终结果可能跨越多个交易日。不是统一的结果公布时刻。',impact:'国会席位变化可能影响财政、税收、监管与政策推进预期。日历仅标记投票日，不预测结果或市场涨跌。'});
 for(const event of events){Object.assign(event,CALENDAR_REVIEW.types[event.type],{verifiedAt:CALENDAR_REVIEW.verifiedAt},CALENDAR_REVIEW.events[event.id]||{})}
 events.push(...EARNINGS_EVENTS);
-export const CALENDAR={verifiedAt:CALENDAR_REVIEW.verifiedAt,reviewCadence:CALENDAR_REVIEW.cadence,minMonth:'2026-01',maxMonth:'2027-12',coverage:'2026–2027 CPI / 非农 / PPI / FOMC；2026 JOLTS / PCE / GDP；2026中期选举；美国市值前20公司近期财报安排（名单核对 '+EARNINGS.rankingAsOf+'）。2027 BEA 与 JOLTS 暂未录入。',earnings:EARNINGS,events:events.sort((a,b)=>(a.instant||a.date).localeCompare(b.instant||b.date))};
+export const CALENDAR={verifiedAt:CALENDAR_REVIEW.verifiedAt,reviewCadence:CALENDAR_REVIEW.cadence,minMonth:'2026-01',maxMonth:'2027-12',coverage:'2026–2027 CPI / 非农 / PPI / FOMC；2026 JOLTS / PCE / GDP；2026中期选举；美国市值前20公司近期财报安排（名单核对 '+EARNINGS.rankingAsOf+'）。2027 JOLTS 已按官方日程录入；2027 BEA 暂未录入。',earnings:EARNINGS,events:events.sort((a,b)=>(a.instant||a.date).localeCompare(b.instant||b.date))};
