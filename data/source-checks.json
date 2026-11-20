@@ -1,44 +1,44 @@
 {
-  "checkedAt": "2026-11-19T19:00:50.712Z",
+  "checkedAt": "2026-11-20T08:36:16.355Z",
   "scope": "Availability and change detection only; not semantic review",
   "sources": [
     {
       "url": "https://www.bls.gov/schedule/2026/home.htm",
-      "checkedAt": "2026-11-19T19:00:50.712Z",
+      "checkedAt": "2026-11-20T08:36:16.355Z",
       "status": "ok",
-      "hash": "33e5a825643237c72bec0a58738d0a6d101ffab03b3cf0f509dfb1592c5a4c25",
-      "changed": false,
+      "hash": "eb3610c58bbc1dedd252addf99f5d218c524be6330bc46daf6de72760640d19e",
+      "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bls.gov/schedule/2027/home.htm",
-      "checkedAt": "2026-11-19T19:00:50.712Z",
+      "checkedAt": "2026-11-20T08:36:16.355Z",
       "status": "ok",
-      "hash": "8206009b9d936f89af6585f8f67a60ca17513652e8f95933ab309f260e4aac2f",
-      "changed": false,
+      "hash": "887dadf3af775676f04f32477bf744fc9dd46059c63119c84f28ccc081e40d5b",
+      "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "checkedAt": "2026-11-19T19:00:50.712Z",
+      "checkedAt": "2026-11-20T08:36:16.355Z",
       "status": "ok",
-      "hash": "4117b71a169733ddc38216e83c5bd9a26c50f71ae2accac6c90b6ce924b24ba4",
+      "hash": "08acabaa1de4d3e9e02906589b74175e94c17534796fb0ac58ea2a8f5891b3a1",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bea.gov/news/schedule/full",
-      "checkedAt": "2026-11-19T19:00:50.712Z",
+      "checkedAt": "2026-11-20T08:36:16.355Z",
       "status": "ok",
-      "hash": "8a421f468374723a2652996cb2f2e252b99810b06f29feea83be9f6de6007d67",
+      "hash": "caf52abc9baf1bbdb95f827b56b716f8a4fa6de7608f4fd219354e8fdda75e0c",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
-      "checkedAt": "2026-11-19T19:00:50.712Z",
+      "checkedAt": "2026-11-20T08:36:16.355Z",
       "status": "ok",
-      "hash": "b692eb979f90089bc7b9b6afc3a3c6fe59ca9b0154796823f1dca9a0e2734466",
+      "hash": "04361e4e6388991d5603153faad67029c61d92378d524245a5a1ec284ad81136",
       "changed": true,
       "requiresReview": true
     }
