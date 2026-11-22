@@ -1,10 +1,10 @@
 {
-  "checkedAt": "2026-11-22T08:01:37.066Z",
+  "checkedAt": "2026-11-22T17:51:12.251Z",
   "scope": "Availability and change detection only; not semantic review",
   "sources": [
     {
       "url": "https://www.bls.gov/schedule/2026/home.htm",
-      "checkedAt": "2026-11-22T08:01:37.066Z",
+      "checkedAt": "2026-11-22T17:51:12.251Z",
       "status": "ok",
       "hash": "eb3610c58bbc1dedd252addf99f5d218c524be6330bc46daf6de72760640d19e",
       "changed": false,
@@ -12,7 +12,7 @@
     },
     {
       "url": "https://www.bls.gov/schedule/2027/home.htm",
-      "checkedAt": "2026-11-22T08:01:37.066Z",
+      "checkedAt": "2026-11-22T17:51:12.251Z",
       "status": "ok",
       "hash": "887dadf3af775676f04f32477bf744fc9dd46059c63119c84f28ccc081e40d5b",
       "changed": false,
@@ -20,15 +20,15 @@
     },
     {
       "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "checkedAt": "2026-11-22T08:01:37.066Z",
+      "checkedAt": "2026-11-22T17:51:12.251Z",
       "status": "ok",
-      "hash": "2a0e04a70cbb8a01b92dfa93d9f06ec9ad7b20151457ea08fb308de0b7a9cf67",
+      "hash": "c9a01b1d940ca3b5b2c12629821ec8dfded753c27dead17be0a17bbfc767ae9e",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bea.gov/news/schedule/full",
-      "checkedAt": "2026-11-22T08:01:37.066Z",
+      "checkedAt": "2026-11-22T17:51:12.251Z",
       "status": "ok",
       "hash": "997de89f5383cb87e437e12fd0b6a16ef74b783ae5137a70be0364fbb12c2296",
       "changed": false,
@@ -36,9 +36,9 @@
     },
     {
       "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
-      "checkedAt": "2026-11-22T08:01:37.066Z",
+      "checkedAt": "2026-11-22T17:51:12.251Z",
       "status": "ok",
-      "hash": "a7861715ad8048fbbc27e77027080b68532e346d4ac1f1b0f3907a69faa2af79",
+      "hash": "5a469cf9161054e49d0db72c7596f332342ba0b868d78fe0a17cb021c176340f",
       "changed": true,
       "requiresReview": true
     }
