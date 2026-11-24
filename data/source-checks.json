@@ -1,10 +1,10 @@
 {
-  "checkedAt": "2026-11-23T22:03:48.973Z",
+  "checkedAt": "2026-11-24T10:58:46.594Z",
   "scope": "Availability and change detection only; not semantic review",
   "sources": [
     {
       "url": "https://www.bls.gov/schedule/2026/home.htm",
-      "checkedAt": "2026-11-23T22:03:48.973Z",
+      "checkedAt": "2026-11-24T10:58:46.594Z",
       "status": "ok",
       "hash": "eb3610c58bbc1dedd252addf99f5d218c524be6330bc46daf6de72760640d19e",
       "changed": false,
@@ -12,7 +12,7 @@
     },
     {
       "url": "https://www.bls.gov/schedule/2027/home.htm",
-      "checkedAt": "2026-11-23T22:03:48.973Z",
+      "checkedAt": "2026-11-24T10:58:46.594Z",
       "status": "ok",
       "hash": "887dadf3af775676f04f32477bf744fc9dd46059c63119c84f28ccc081e40d5b",
       "changed": false,
@@ -20,25 +20,25 @@
     },
     {
       "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
-      "checkedAt": "2026-11-23T22:03:48.973Z",
+      "checkedAt": "2026-11-24T10:58:46.594Z",
       "status": "ok",
-      "hash": "23953a45dbe2cdfc4222aa12a201280e17e56a9dabaab8e0646e912dca9f0afb",
+      "hash": "cb9853bb73c0a95b4d9ba6699edcc4db29948239cc8e9304a64440943e251e6c",
       "changed": true,
       "requiresReview": true
     },
     {
       "url": "https://www.bea.gov/news/schedule/full",
-      "checkedAt": "2026-11-23T22:03:48.973Z",
+      "checkedAt": "2026-11-24T10:58:46.594Z",
       "status": "ok",
       "hash": "f9759d0bfe7bd19455818a7d3c0ffc85dfb13a488ce03d3034b25aae85632d3b",
-      "changed": true,
+      "changed": false,
       "requiresReview": true
     },
     {
       "url": "https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/",
-      "checkedAt": "2026-11-23T22:03:48.973Z",
+      "checkedAt": "2026-11-24T10:58:46.594Z",
       "status": "ok",
-      "hash": "50af0d253a8cb83526decec92fcdb3a56726e126120626abe05373c9114975e6",
+      "hash": "f6c96c7db152c93e520a4bb1ec4aff795255a7c7cd3224e2b320fca00ae2e55c",
       "changed": true,
       "requiresReview": true
     }
